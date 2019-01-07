@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.product.EarningsMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="earningsMap" type="Earnings" >
+		<id column="id" property="id" />
+		<result column="incomeLevel" property="incomeLevel" />
+		<result column="lowerLimit" property="lowerLimit" />
+		<result column="upperLimit" property="upperLimit" />
+		<result column="expectedRate" property="expectedRate" />
+		<result column="term" property="term" />
+		<result column="termUnit" property="termUnit" />
+		<result column="note" property="note" />
+		<result column="productCode" property="productCode"/>
+		<result column="status" property="status"/>
+		<result column="source" property="source"/>
+	</resultMap>
+
+	<select id="selectByProductCode" resultMap="earningsMap" parameterType="Integer">
+		SELECT * FROM earnings WHERE productCode=#{productCode} AND `status`!=0
+	</select>
+
+	<insert id="addEarnings">
+
+INSERT INTO earnings
+	(incomeLevel,
+	lowerLimit,
+	upperLimit,
+	expectedRate,
+	term,
+	termUnit,
+	note,
+	productCode
+	)
+	VALUES
+	(#{incomeLevel},
+	#{lowerLimit},
+	#{upperLimit},
+	#{expectedRate},
+	#{term},
+	#{termUnit},
+	#{note},
+	#{productCode}
+	)
+	</insert>
+
+
+	<select id="checkInput"  resultType="Integer">
+		SELECT COUNT(1) FROM earnings
+		WHERE incomeLevel=#{incomeLevel} AND lowerLimit=#{lowerLimit}
+		AND upperLimit=#{upperLimit} AND expectedRate=#{expectedRate}
+		AND term=#{term} AND termUnit=#{termUnit} AND `status`!=0
+	</select>
+
+
+	<update id="delete" parameterType="Integer">
+		UPDATE earnings SET `status` = 0 WHERE id =#{id}
+	</update>
+
+	<select id="getEarningsById" parameterType="Integer" resultMap="earningsMap">
+		SELECT * FROM earnings WHERE id=#{id}
+	</select>
+
+	<update id="updateEarnings" parameterType="Earnings">
+		UPDATE earnings
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="incomeLevel!=null and lowerLimit!=''">
+				incomeLevel=#{incomeLevel},
+			</if>
+			<if test="lowerLimit!=null">
+				lowerLimit=#{lowerLimit},
+			</if>
+			<if test="upperLimit!=null">
+				upperLimit=#{upperLimit},
+			</if>
+			<if test="expectedRate!=null">
+				expectedRate=#{expectedRate},
+			</if>
+			<if test="term!=null">
+				term=#{term},
+			</if>
+			<if test="termUnit!=null">
+				termUnit=#{termUnit},
+			</if>
+			<if test="note!=null and note!=''">
+				note=#{note}
+			</if>
+		</trim>
+	</update>
+
+	<select id="getTermAndTermUnit" resultMap="earningsMap">
+		SELECT term,termUnit FROM earnings WHERE id IN
+		<foreach collection="array" open="("  separator="," close=")"  item="id">
+			#{id}
+		</foreach>
+	</select>
+
+	<update id="updEarningsStatus" parameterType="Integer">
+		UPDATE earnings SET `status`=#{status} WHERE id=#{id}
+	</update>
+
+	<select id="getEarningsStatusById" parameterType="Integer" resultMap="earningsMap">
+		SELECT `status` FROM earnings WHERE id=#{id}
+	</select>
+</mapper>

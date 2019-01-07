@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        tr {
+            height: 47px;
+        }
+        td{
+            width: 100px;
+        }
+        .tbl td{
+            text-align: center;
+        }
+        .k{
+            text-align: left;
+        }
+        .v{
+            text-align: left;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div id="pagemark">
+        <a th:href="@{/product/selectProductDetail(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">产品信息</button>
+        </a>
+        <a th:href="@{/accessories/selectAccessoriesByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">附件信息</button>
+        </a>
+        <a>
+            <button class="btn btn-info" style="width: 80px;">客户</button>
+        </a>
+        <a th:href="@{/netvalue/getNetvalueListByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">净值</button>
+        </a>
+        <a th:href="@{/earnings/selectByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">收益级别</button>
+        </a>
+        <a>
+            <button class="btn btn-default" style="width: 80px;">投后事项</button>
+        </a>
+    </div>
+    <div>
+        <p style="background-color:#5bc0de ;">客户信息</p>
+    </div>
+    <div align="center">
+        <form th:action="@{/customer/conditionSelect}">
+            <table width="70%">
+                <tr>
+                    <td>客户姓名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="customerName" th:value="${customerName}"/></td>
+
+                    <td>合同编号:<input type="text" name="contractNo" th:value="${contractNo}"/></td>
+                        <td>存量份额:<input type="text" name="stockStart" th:value="${stockStart}" style="width: 20%;"/> ~ <input type="text" name="stockEnd" th:value="${stockEnd}"
+                                                                                        style="width: 20%;"/></td>
+                </tr>
+                <tr>
+                    <td>当前客户经理:
+                        <input name="customerManager" th:value="${customerManager}" type="text"/>
+                    </td>
+                    <td>销售渠道:
+                        <select name="salesChannel">
+                            <option value="">全部</option>
+                            <option th:selected="${salesChannel}=='管理人'" value="管理人">管理人</option>
+                            <option th:selected="${salesChannel}=='投资顾问'" value="投资顾问">投资顾问</option>
+                            <option th:selected="${salesChannel}=='项目来源方'" value="项目来源方">项目来源方</option>
+                            <option th:selected="${salesChannel}=='客户项目银行'" value="客户项目银行">客户项目银行</option>
+                        </select>
+                    </td>
+                    <td>邮箱是否为空:
+                        <select name="isEmailNull">
+                            <option value="">全部</option>
+                            <option th:selected="${isEmailNull}=='0'" value="0">否</option>
+                            <option th:selected="${isEmailNull}=='1'" value="1">是</option>
+                        </select>
+                    </td>
+                    <!--携带projectId,productCode过去-->
+                    <input type="hidden" name="projectId" th:value="${projectId}"/>
+                    <input type="hidden" name="productCode" th:value="${productCode}"/>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        <input type="submit" value="查询" class="btn btn-info"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" value="重置" class="btn btn-danger"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <hr/>
+</div>
+<div class="container">
+    <table class="table table-bordered table-hover tbl">
+        <tr bgcolor="#F2F2F2">
+            <td>操作</td>
+
+            <td>客户姓名</td>
+            <!--<td>证件类型</td>-->
+            <!--<td>证件号码</td>-->
+            <td>手机号码</td>
+            <td>电子邮箱</td>
+            <td>产品名称</td>
+            <td>合同编号</td>
+            <td>存量份额</td>
+            <!--<td>开户银行</td>-->
+            <!--<td>账户名称</td>-->
+            <!--<td>银行账号</td>-->
+            <!--<td>固定电话</td>-->
+            <!--<td>邮编</td>-->
+            <!--<td>联系地址</td>-->
+            <!--<td>销售模式</td>-->
+            <td>销售渠道</td>
+            <!--<td>合同到期日期</td>-->
+            <!--<td>收益级别期限（月）</td>-->
+            <!--<td>预期收益率</td>-->
+            <td>当前客户经理</td>
+            <!--<td>签约时间</td>-->
+            <!--<td>认购金额</td>-->
+        </tr>
+        <tr th:each="customerContract:${pageInfo.list}">
+            <td>
+                <a onclick="detail(this)" th:data-id="${customerContract.contractId}" data-toggle="modal" data-target="#customerDetails">详情</a>
+                <input type="hidden" class="contractId" th:value="${customerContract.contractId}"/>
+            </td>
+
+            <td th:text="${customerContract.customerName}"></td>
+            <!--<td th:text="${customerContract.credentialsType}"></td>-->
+            <!--<td th:text="${customerContract.certificateNumber}"></td>-->
+            <td th:text="${customerContract.phoneNumber}"></td>
+            <td th:text="${customerContract.email}"></td>
+            <td th:text="${customerContract.productName}"></td>
+            <td th:text="${customerContract.contractNo}"></td>
+            <td th:text="${customerContract.stockShare}"></td>
+            <!--<td th:text="${customerContract.accountBank}"></td>-->
+            <!--<td th:text="${customerContract.accountName}"></td>-->
+            <!--<td th:text="${customerContract.bankAccount}"></td>-->
+            <!--<td th:text="${customerContract.telephone}"></td>-->
+            <!--<td th:text="${customerContract.postcode}"></td>-->
+            <!--<td th:text="${customerContract.address}"></td>-->
+            <!--<td th:text="${customerContract.salesModel}"></td>-->
+            <td th:text="${customerContract.salesChannel}"></td>
+            <!--<td th:text="${customerContract.expiryDate}"></td>-->
+            <!--<td th:text="${customerContract.incomeLevelTerm}"></td>-->
+            <!--<td th:text="${customerContract.expectedRate}"></td>-->
+            <td th:text="${customerContract.customerManager}"></td>
+            <!--<td th:text="${customerContract.signingTime}"></td>-->
+            <!--<td th:text="${customerContract.subscriptionAmount}"></td>-->
+        </tr>
+    </table>
+
+    <div align="center">
+        <span>
+            共<span th:text="${pageInfo.total}"></span>条记录
+            [
+            <span th:text="${pageInfo.pageNum}"></span>
+            /
+            <span th:text="${pageInfo.pages}"></span>
+            ]
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>
+            <a th:href="@{/customer/conditionSelect(projectId=${projectId},productCode=${productCode},customerName=${customerName},contractNo=${contractNo},stockStart=${stockStart},stockEnd=${stockEnd},customerManager=${customerManager},salesChannel=${salesChannel})}">首页</a>
+            <a th:href="@{/customer/conditionSelect(pageNum=${pageInfo.prePage},projectId=${projectId},productCode=${productCode},customerName=${customerName},contractNo=${contractNo},stockStart=${stockStart},stockEnd=${stockEnd},customerManager=${customerManager},salesChannel=${salesChannel})}">上一页</a>
+            <a th:href="@{/customer/conditionSelect(pageNum=${pageInfo.nextPage},projectId=${projectId},productCode=${productCode},customerName=${customerName},contractNo=${contractNo},stockStart=${stockStart},stockEnd=${stockEnd},customerManager=${customerManager},salesChannel=${salesChannel})}">下一页</a>
+            <a th:href="@{/customer/conditionSelect(pageNum=${pageInfo.pages},projectId=${projectId},productCode=${productCode},customerName=${customerName},contractNo=${contractNo},stockStart=${stockStart},stockEnd=${stockEnd},customerManager=${customerManager},salesChannel=${salesChannel})}">末页</a>
+        </span>
+    </div>
+    <!-- 详情Modal框-->
+    <div class="modal fade" id="customerDetails">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4 class="modal-title">详情</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <table class="table table-hover table-striped table-responsive">
+                        <p class="btn btn-info btn-sm">客户详情</p>
+                        <tr>
+                            <td class="k">客户名称:</td>
+                            <td class="v customerName"></td>
+                            <td class="k">生肖:</td>
+                            <td class="v zodiac"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">证件类型:</td>
+                            <td class="v credentialsType"></td>
+                            <td class="k">星座:</td>
+                            <td class="v constellation"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">证件号码</td>
+                            <td class="v certificateNumber"></td>
+                            <td class="k">民族</td>
+                            <td class="v nation"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">证件有效期</td>
+                            <td class="v certificateValidityPeriod"></td>
+                            <td class="k">手机号码</td>
+                            <td class="v phoneNumber"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">生日</td>
+                            <td class="v birthday"></td>
+                            <td class="k">联系地址</td>
+                            <td class="v address"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">性别</td>
+                            <td class="v gender"></td>
+                            <td class="k">电子邮箱</td>
+                            <td class="v email"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">国籍</td>
+                            <td class="v nationality"></td>
+                            <td class="k">理财经理</td>
+                            <td class="v financialManager"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">婚姻状况</td>
+                            <td class="v maritalStatus"></td>
+                            <td class="k">联系电话</td>
+                            <td class="v contactNumber"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">是否事实客户</td>
+                            <td class="v isFact"></td>
+                            <td class="k">职业</td>
+                            <td class="v job"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">客户等级</td>
+                            <td class="v grade"></td>
+                            <td class="k">备注</td>
+                            <td class="v remark"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">风险评级</td>
+                            <td class="v riskRating"></td>
+                            <td class="k">联系偏好</td>
+                            <td class="v contactPreference"></td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <table class="table table-hover table-striped table-responsive">
+                        <p class="btn btn-info btn-sm">合同详情</p>
+                        <tr>
+                            <td class="k">合同编号</td>
+                            <td class="v contractNo"></td>
+                            <td class="k">销售模式</td>
+                            <td class="v salesModel"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">产品代码</td>
+                            <td class="v productCode"></td>
+                            <td class="k">销售渠道</td>
+                            <td class="v salesChannel"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">产品名称</td>
+                            <td class="v productName"></td>
+                            <td class="k">合同到期日期</td>
+                            <td class="v expiryDate"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">存量份额</td>
+                            <td class="v stockShare"></td>
+                            <td class="k">收益级别期限</td>
+                            <td class="v incomeLevelTerm"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">开户银行</td>
+                            <td class="v accountBank"></td>
+                            <td class="k">预期收益率</td>
+                            <td class="v expectedRate"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">账户名称</td>
+                            <td class="v accountName"></td>
+                            <td class="k">当前客户经理</td>
+                            <td class="v customerManager"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">银行账号</td>
+                            <td class="v bankAccount"></td>
+                            <td class="k">签约时间</td>
+                            <td class="v signingTime"></td>
+                        </tr>
+                        <tr>
+                            <td class="k">固定电话</td>
+                            <td class="v telephone"></td>
+                            <td class="k">认购金额</td>
+                            <td class="v subscriptionAmount"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+        function detail(e) {
+            var contractId=e.getAttribute("data-id");
+            $.get("/customer/getCustomerContractDetail", {"contractId":contractId}, function (data) {
+                var jsondata = $.parseJSON(data);
+                $(".customerName").text(jsondata.customerName);
+                $(".credentialsType").text(jsondata.credentialsType);
+                $(".certificateNumber").text(jsondata.certificateNumber);
+                $(".certificateValidityPeriod").text(jsondata.certificateValidityPeriod);
+                $(".birthday").text(jsondata.birthday);
+                $(".gender").text(jsondata.gender);
+                $(".nationality").text(jsondata.nationality);
+                $(".maritalStatus").text(jsondata.maritalStatus);
+                $(".isFact").text(jsondata.isFact);
+                $(".grade").text(jsondata.grade);
+                $(".riskRating").text(jsondata.riskRating);
+                $(".zodiac").text(jsondata.zodiac);
+                $(".constellation").text(jsondata.constellation);
+                $(".nation").text(jsondata.nation);
+                $(".phoneNumber").text(jsondata.phoneNumber);
+                $(".address").text(jsondata.address);
+                $(".email").text(jsondata.email);
+                $(".financialManager").text(jsondata.financialManager);
+                $(".contactNumber").text(jsondata.contactNumber);
+                $(".job").text(jsondata.job);
+                $(".remark").text(jsondata.remark);
+                $(".contactPreference").text(jsondata.contactPreference);
+
+                $(".contractNo").text(jsondata.contractNo);
+                $(".productCode").text(jsondata.productCode);
+                $(".productName").text(jsondata.productName);
+                $(".stockShare").text(jsondata.stockShare);
+                $(".accountBank").text(jsondata.accountBank);
+                $(".accountName").text(jsondata.accountName);
+                $(".bankAccount").text(jsondata.bankAccount);
+                $(".telephone").text(jsondata.telephone);
+                $(".salesModel").text(jsondata.salesModel);
+                $(".salesChannel").text(jsondata.salesChannel);
+                $(".expiryDate").text(jsondata.expiryDate);
+                $(".incomeLevelTerm").text(jsondata.incomeLevelTerm);
+                $(".expectedRate").text(jsondata.expectedRate);
+                $(".customerManager").text(jsondata.customerManager);
+                $(".signingTime").text(jsondata.signingTime);
+                $(".subscriptionAmount").text(jsondata.subscriptionAmount);
+            });
+        }
+
+</script>
+</body>
+</html>

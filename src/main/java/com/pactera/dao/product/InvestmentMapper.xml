@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.product.InvestmentMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="investmentMap" type="Investment" >
+		<id column="id" property="id"/>
+		<result column="productTo" property="productTo" />
+		<result column="distributionCycle" property="distributionCycle" />
+		<result column="distributionDescription" property="distributionDescription" />
+		<result column="openCycle" property="openCycle" />
+		<result column="openCycleDescription" property="openCycleDescription" />
+		<result column="closePeriod" property="closePeriod" />
+		<result column="closedUnit" property="closedUnit" />
+		<result column="redeemable" property="redeemable" />
+		<result column="redeemableRate" property="redeemableRate" />
+		<result column="redeemableLimit" property="redeemableLimit" />
+		<result column="isAppend" property="isAppend" />
+		<result column="productId" property="productId" />
+		<result column="productRisk" property="productRisk" />
+	</resultMap>
+
+
+
+</mapper>

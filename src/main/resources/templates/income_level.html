@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+
+    <style>
+        td {
+            text-align: center;
+            width: 108px;
+        }
+
+        td input {
+            width: 90px;
+        }
+
+        #checkbox {
+            width: 30px;
+        }
+
+        .k {
+            text-align: center;
+        }
+
+        .v {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="pagemark">
+        <a th:href="@{/product/selectProductDetail(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">产品信息</button>
+        </a>
+        <a th:href="@{/accessories/selectAccessoriesByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">附件信息</button>
+        </a>
+        <a th:href="@{/customer/getCustomerList(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">客户</button>
+        </a>
+        <a th:href="@{/netvalue/getNetvalueListByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-default" style="width: 80px;">净值</button>
+        </a>
+        <a th:href="@{/earnings/selectByProductCode(projectId=${projectId},productCode=${productCode})}">
+            <button class="btn btn-info" style="width: 80px;">收益级别</button>
+        </a>
+        <a>
+            <button class="btn btn-default" style="width: 80px;">投后事项</button>
+        </a>
+    </div>
+    <div style="background-color:#5bc0de ;">
+        <p>收益级别设置</p>
+        <button id="add" onclick="addrow()" class="btn btn-info btn-sm">添加记录</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button id="addGroup" class="btn btn-info btn-sm">创建分组</button>
+        <button id="delGroup" class="btn btn-info btn-sm">取消分组</button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="addGroupModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4 class="modal-title">创建分组</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <form>
+                        收益级别组名：<input type="text" id="groupName" placeholder="输入文本..."/><br/><br/>
+                        <button type="button" id="addGroupSave" class="btn btn-info">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+        作者：offline
+        时间：2018-09-24
+        描述：收益级别信息
+    -->
+    <div align="center">
+        <form th:action="@{/earnings/addEarnings}" id="addForm">
+            <table class="table table-bordered table-hover tab1">
+                <tr bgcolor="#F2F2F2">
+                    <td>操作</td>
+                    <td>收益级别</td>
+                    <td>金额下限(含)</td>
+                    <td>金额上限(不含)</td>
+                    <td>预期收益率（%）</td>
+                    <td>收益级别期限</td>
+                    <td>收益级别期限单位</td>
+                    <td>备注</td>
+                </tr>
+                <tr th:each="earnings:${list}">
+                    <td>
+                        <span><input id="checkbox" type="checkbox" th:value="${earnings.id}"/></span>
+                        <a onclick="edit(this)" th:data-id="${earnings.id}" data-toggle="modal"
+                           data-target="#editModal" class="edit">编辑</a>
+                        <a onclick="del(this)" th:data-id="${earnings.id}" th:data-productCode="${productCode}"
+                           th:data-projectId="${projectId}">删除</a>
+                    </td>
+                    <td th:text="${earnings.incomeLevel}"></td>
+                    <td th:text="${earnings.lowerLimit}"></td>
+                    <td th:text="${earnings.upperLimit}"></td>
+                    <td th:text="${earnings.expectedRate}"></td>
+                    <td th:text="${earnings.term}"></td>
+                    <td th:text="${earnings.termUnit}"></td>
+                    <td th:text="${earnings.note}"></td>
+                </tr>
+                <!--携带projectId,productCode-->
+                <input type="hidden" name="projectId" class="pjid" th:value="${projectId}"/>
+                <input type="hidden" name="productCode" class="pdcd" th:value="${productCode}"/>
+            </table>
+            <!--
+            0<div align="center" id="warn2" style="color: red;"></div>-->
+            <input id="save" onclick="checkInput()" type="button" style="display: none" value="保存"
+                   class="btn btn-info"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="cancel" style="display: none"
+               th:href="@{/earnings/selectByProductCode(projectId=${projectId},productCode=${productCode})}"
+               class="btn btn-default">取消</a>
+        </form>
+    </div>
+    <hr/>
+    <!--收益级别分组-->
+    <div>
+        <table class="table table-bordered" id="tab2">
+            <tr bgcolor="#F2F2F2">
+                <td>收益级别组名</td>
+                <td>收益级别</td>
+                <td>金额下限(含)</td>
+                <td>金额上限(不含)</td>
+                <td>预期收益率（%）</td>
+                <td>收益级别期限</td>
+                <td>收益级别期限单位</td>
+                <td>备注</td>
+            </tr>
+            <tr th:each="group:${groups}">
+                <td>
+                    <input style="width: 30px" type="radio" name="check" th:value="${group.groupName}"/>
+                    <span th:text="${group.groupName}"></span>
+                </td>
+                <td th:text="${group.incomeLevel}"></td>
+                <td th:text="${group.lowerLimit}"></td>
+                <td th:text="${group.upperLimit}"></td>
+                <td th:text="${group.expectedRate}"></td>
+                <td th:text="${group.term}"></td>
+                <td th:text="${group.termUnit}"></td>
+                <td th:text="${group.note}"></td>
+            </tr>
+        </table>
+    </div>
+    <!-- 编辑Modal框-->
+    <div class="modal fade" id="editModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <span class="modal-title h4">编辑</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span id="warn" style="color: red;"></span>
+                </div>
+                <div class="modal-body" align="center">
+                    <form th:action="@{/earnings/updateEarnings}" method="post" id="editForm">
+                        <table class="table table-hover table-responsive">
+                            <tr>
+                                <td class="k">收益级别:</td>
+                                <td class="v"><input type="text" name="incomeLevel" id="incomeLevel"/></td>
+                                <td class="k">预期收益率（%）:</td>
+                                <td class="v"><input type="text" name="expectedRate" id="expectedRate"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">金额下限(含):</td>
+                                <td class="v"><input type="text" name="lowerLimit" id="lowerLimit"/></td>
+                                <td class="k">收益级别期限:</td>
+                                <td class="v"><input type="text" disabled="disabled" name="term" id="term"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">金额上限(不含):</td>
+                                <td class="v "><input type="text" name="upperLimit" id="upperLimit"/></td>
+                                <td class="k">收益级别期限单位:</td>
+                                <td class="v"><input type="text" disabled="disabled" name="termUnit" id="termUnit"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="k">备注:</td>
+                                <td class="v" colspan="3"><input type="text" name="note" id="note"
+                                                                 style="width: 91.5%;"/></td>
+                                <!--携带id,projectId,productCode-->
+                                <input type="hidden" name="id" id="earningsId"/>
+                                <input type="hidden" name="projectId" th:value="${projectId}"/>
+                                <input type="hidden" name="productCode" th:value="${productCode}"/>
+                            </tr>
+                            <tr align="center">
+                                <td colspan="4">
+                                    <input onclick="editCheckInput()" type="button" value="保存" class="btn btn-info"/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="button" value="取消" class="btn btn-default" data-dismiss="modal"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //预期收益率输入,正则表达式验证
+    $("#expectedRate").blur(function () {
+        var expectedRate = $("#expectedRate").val();
+        if (expectedRate === null || expectedRate === "") {
+            $("#warn").html("预期收益率不得为空");
+        } else {
+            var reg = /^0\.[1-9]\d*$/;
+            if (!reg.test(expectedRate)) {
+                $("#warn").html("预期收益率格式有误,请重新录入");
+                $("#expectedRate").val("");
+            } else {
+                $("#warn").html("");
+            }
+        }
+    });
+
+    //金额下限输入,正则表达式验证
+    $("#lowerLimit").blur(function () {
+        var lowerLimit = $("#lowerLimit").val();
+        if (lowerLimit === null || lowerLimit === "") {
+            $("#warn").html("金额下限不得为空");
+        } else {
+            var reg = /^([1-9]\d*|0)(\.\d{1,2})?$/;
+            if (!reg.test(lowerLimit)) {
+                $("#warn").html("金额下限格式有误,请重新录入(允许两位小数)");
+                $("#lowerLimit").val("");
+            } else {
+                $("#warn").html("");
+            }
+        }
+    });
+    //金额上限输入,正则表达式验证
+    $("#upperLimit").blur(function () {
+        var upperLimit = $("#upperLimit").val();
+        var lowerLimit = $("#lowerLimit").val();
+        if (upperLimit === null || upperLimit === "") {
+            $("#warn").html("金额上限不得为空");
+        } else {
+            var reg = /^([1-9]\d*|0)(\.\d{1,2})?$/;
+            if (!reg.test(upperLimit)) {
+                $("#warn").html("金额上限格式有误,请重新录入(允许两位小数)");
+                $("#upperLimit").val("");
+            } else {
+
+                if (upperLimit * 1 < lowerLimit * 1) {
+                    $("#warn").html("金额上限不得小于金额下限");
+                    $("#upperLimit").val("");
+                } else {
+                    $("#warn").html("");
+                }
+            }
+        }
+    });
+    //分组:合并相同组名单元格
+    jQuery.fn.rowspan = function (colIdx) { //封装的一个JQuery小插件
+        return this.each(function () {
+            var that;
+            $('tr', this).each(function (row) {
+                $('td:eq(' + colIdx + ')', this).filter(':visible').each(function (col) {
+                    if (that != null && $(this).html() == $(that).html()) {
+                        rowspan = $(that).attr("rowSpan");
+                        if (rowspan == undefined) {
+                            $(that).attr("rowSpan", 1);
+                            rowspan = $(that).attr("rowSpan");
+                        }
+                        rowspan = Number(rowspan) + 1;
+                        $(that).attr("rowSpan", rowspan);
+                        $(this).hide();
+                    } else {
+                        that = this;
+                    }
+                });
+            });
+        });
+    };
+    //传入的参数是对应的列数从0开始  第一列合并相同
+    $(function () {
+        $("#tab2").rowspan(0);
+    });
+
+    //创建添加行函数
+    function addrow() {
+        $("#add").attr("disabled", "disabled");
+        $("#save").attr("style", "display: inline-block;");
+        $("#cancel").attr("style", "display: inline-block;");
+        var tables = $('.tab1');
+        var addtr = $("<tr>" + "<td>" + "<input id='checkbox' type='checkbox'/>&nbsp;" + "<a>编辑</a>&nbsp;" + "<a>删除</a>" + "</td>" + "<td><input type='text' name='incomeLevel' id='incomeLevel2'/></td>" + "<td><input type='text' name='lowerLimit' id='lowerLimit2'/></td>" + "<td><input type='text' name='upperLimit' id='upperLimit2'/></td>" + "<td><input type='text' name='expectedRate' id='expectedRate2'/></td>" + "<td><input type='text' name='term' id='term2'/></td>" + "<td><input type='text' name='termUnit' id='termUnit2' value='月'/></td>" + "<td><input type='text' name='note' id='note2'/></td>" + "</tr>");
+        addtr.appendTo(tables);
+    }
+
+    //检查重复
+    function checkInput() {
+        var incomeLevel = $("#incomeLevel2").val();
+        var lowerLimit = $("#lowerLimit2").val();
+        var upperLimit = $("#upperLimit2").val();
+        var expectedRate = $("#expectedRate2").val();
+        var term = $("#term2").val();
+        var termUnit = $("#termUnit2").val();
+        if (incomeLevel.length !== 0 && lowerLimit.length !== 0 && upperLimit.length !== 0 && expectedRate.length !== 0 && term.length !== 0 && termUnit.length !== 0) {
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '[[@{/earnings/checkInput}]]',
+                data: {
+                    incomeLevel: incomeLevel,
+                    lowerLimit: lowerLimit,
+                    upperLimit: upperLimit,
+                    expectedRate: expectedRate,
+                    term: term,
+                    termUnit: termUnit
+                },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if (null !== data) {
+                        if (data.message === "y") {
+                            /**
+                             * 没重复，提交添加收益表单
+                             */
+                            $("#addForm").submit();
+                        } else if (data.message === "n") {
+                            /**
+                             * 重复，直接return
+                             */
+                            alert("您输入的收益级别信息记录已经存在，不允许重复添加！");
+                        }
+                    }
+                }
+            });
+        } else {
+            /**
+             * 数据没输入完整
+             */
+            alert("您的数据没有输入完整！");
+        }
+    }
+
+    //编辑时检查重复
+    function editCheckInput() {
+        var incomeLevel = $("#incomeLevel").val();
+        var lowerLimit = $("#lowerLimit").val();
+        var upperLimit = $("#upperLimit").val();
+        var expectedRate = $("#expectedRate").val();
+        var term = $("#term").val();
+        var termUnit = $("#termUnit").val();
+        if (incomeLevel.length !== 0 && lowerLimit.length !== 0 && upperLimit.length !== 0 && expectedRate.length !== 0 && term.length !== 0 && termUnit.length !== 0) {
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '[[@{/earnings/checkInput}]]',
+                data: {
+                    incomeLevel: incomeLevel,
+                    lowerLimit: lowerLimit,
+                    upperLimit: upperLimit,
+                    expectedRate: expectedRate,
+                    term: term,
+                    termUnit: termUnit
+                },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if (null !== data) {
+                        if (data.message === "y") {
+                            /**
+                             * 没重复，提交添加收益表单
+                             */
+                            $("#editForm").submit();
+                        } else if (data.message === "n") {
+                            /**
+                             * 重复，直接return
+                             */
+                            alert("您输入的收益级别信息记录已经存在，不允许重复添加！");
+
+                        }
+                    }
+                }
+            });
+        } else {
+            /**
+             * 数据没输入完整
+             */
+            alert("您的数据没有输入完整！");
+        }
+    }
+
+    //编辑
+    function edit(e) {
+        var id = e.getAttribute("data-id");
+        $.get("/earnings/getEarningsById", {"id": id}, function (data) {
+            var jsondata = $.parseJSON(data);
+            $("#incomeLevel").val(jsondata.incomeLevel);
+            $("#lowerLimit").val(jsondata.lowerLimit);
+            $("#upperLimit").val(jsondata.upperLimit);
+            $("#expectedRate").val(jsondata.expectedRate);
+            $("#term").val(jsondata.term);
+            $("#termUnit").val(jsondata.termUnit);
+            $("#note").val(jsondata.note);
+            $("#earningsId").val(jsondata.id);
+        });
+    }
+
+    //删除
+    function del(e) {
+        var id = e.getAttribute("data-id");
+        var productCode = e.getAttribute("data-productCode");
+        var projectId = e.getAttribute("data-projectId");
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: '[[@{/earnings/checkCountByEarningsId}]]',
+            data: {earningsId: id},
+            traditional: true,//防止深度序列化
+            cache: false,
+            async: true,
+            success: function (data) {
+                if (data.message === "y") {
+                    if (confirm("确定要删除此条收益级别信息吗?")) {
+                        location.href = "/earnings/delete?id=" + id + "&productCode=" + productCode + "&projectId=" + projectId;
+                    }
+                } else {
+                    alert("该收益级别信息已分组，不允许删除！");
+                }
+            }
+        });
+    }
+
+    //创建分组
+    $("#addGroup").click(function () {
+        var checked = $("input:checkbox:checked");
+        if (checked.length >= 2) {
+            var idArr = [];
+            //遍历选中的复选框
+            checked.each(function () {
+                //将选中的复选框的值添加到数组里
+                idArr.push($(this).val());
+            });
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '[[@{/earnings/checkTermAndTermUnit}]]',
+                data: {idArr: idArr},
+                traditional: true,//防止深度序列化
+                cache: false,
+                async: false,//锁死浏览器
+                success: function (data) {
+                    if (null !== data) {
+                        if (data.message === "y") {
+                            $("#addGroupModal").modal("show");
+                            //创建分组
+                            $("#addGroupSave").click(function () {
+                                var groupName = $("#groupName").val();
+                                if (groupName.length !== 0) {
+                                    $.ajax({
+                                        type: 'post',
+                                        dataType: 'json',
+                                        url: '[[@{/earnings/checkGroupName}]]',
+                                        data: {groupName: groupName},
+                                        traditional: true,//防止深度序列化
+                                        cache: false,
+                                        async: true,
+                                        success: function (data) {
+                                            if (null !== data) {
+                                                if (data.message === "y") {
+                                                    var projectId = $(".pjid").val();
+                                                    var productCode = $(".pdcd").val();
+                                                    //执行添加分组方法
+                                                    $.ajax({
+                                                        type: 'post',
+                                                        dataType: 'json',
+                                                        url: '[[@{/earnings/addEarningsGroup}]]',
+                                                        data: {idArr: idArr, groupName: groupName},
+                                                        traditional: true,//防止深度序列化
+                                                        cache: false,
+                                                        async: true,
+                                                        success: function (data) {
+                                                            if (null !== data.message) {
+                                                                location.href = "/earnings/selectByProductCode?productCode=" + productCode + "&projectId=" + projectId;
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    alert("收益级别组名不允许重复，请重新输入！");
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    alert("分组名不得为空！");
+                                }
+                            });
+                        } else {
+                            alert("您勾选的记录期限不统一, 不符合分组要求. 请重新选择 !");
+                        }
+                    }
+                }
+            });
+        } else {
+            alert("请先勾选至少两条记录!");
+        }
+    });
+
+    //取消分组
+    $("#delGroup").click(function () {
+        var checked = $("input:radio:checked");
+        var len = checked.length;
+        if (len !== 0) {
+            var groupName = checked.val();
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '[[@{/earnings/checkGroupStatus}]]',
+                data: {groupName: groupName},
+                traditional: true,//防止深度序列化
+                cache: false,
+                async: true,
+                success: function (data) {
+                    if (data.message === "y") {
+                        var projectId = $(".pjid").val();
+                        var productCode = $(".pdcd").val();
+                        if (confirm("一旦取消不可撤回, 确定要取消此分组吗?")) {
+                            location.href = "/earnings/deleteGroup?groupName=" + groupName + "&productCode=" + productCode + "&projectId=" + projectId;
+                        }
+                    } else {
+                        alert("该收益级别分组记录正在被营销项目引用，不允许取消分组！");
+                    }
+                }
+            });
+        } else {
+            alert("请先选择要取消的分组!");
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">		
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<style>
+			td{
+				text-align: center;
+			}
+			#disappare {
+				border: 3px solid #ccc;
+				border-radius: 5px;
+				background: #fff;
+				font-size: 20px;
+				width: 200px;
+				height: 90px;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				margin: -125px 0 0 -150px;
+			}
+
+			#disappare h2 {
+				height: 35px;
+				line-height: 35px;
+				text-indent: 5px;
+			}
+		</style>
+		<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="pagemark">
+				<a><button class="btn btn-info" style="width: 80px;">产品信息</button></a>
+				<a><button class="btn btn-default" style="width: 80px;">附件信息</button></a>
+			</div>
+			<div>
+				<p style="background-color:#5bc0de ;">新建产品信息</p>
+			</div>
+			<span>基本信息</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<!--产品名称验证提示-->
+			<span id="info" style="color:red;"></span>
+			<form id="addProductForm" th:action="@{/product/addProduct}" method="post">
+				<table class="table">
+					<tr>
+						<td>产品代码:</td>
+						<td><input type="text" name="productCode" value="系统自动生成" disabled="disabled"/></td>
+						<td>产品名称:</td>
+						<td>
+							<input type="text" name="productName" id="productName"/>
+
+						</td>
+						<td>项目类型:</td>
+						<td><input type="text" th:value="${project.projectType}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>产品分类:</td>
+						<td><input type="text" th:value="${project.productType}" disabled="disabled"/></td>
+						<td>项目名称:</td>
+						<td><input type="text" th:value="${project.projectName}" disabled="disabled"/></td>
+						<td>外文名:</td>
+						<td><input type="text" th:value="${project.projectEnglishName}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>投资方式:</td>
+						<td><input type="text" th:value="${project.investMethod}" disabled="disabled"/></td>
+						<td>资金投向:</td>
+						<td><input type="text" th:value="${project.moneyTo}" disabled="disabled"/></td>
+						<!--<td style="">项目代码:</td>-->
+						<td><input type="hidden" name="projectId" th:value="${project.projectId}"/></td>
+					</tr>
+					<tr>
+						<td style="color: red;">产品投向:</td>
+						<td>
+							<input type="text" id="productTo" name="productTo"/>
+							<!--<label><input type="checkbox" value="tx2"/>投向2</label>-->
+							<!--<label><input type="checkbox" value="tx3"/>投向3</label>-->
+						</td>
+					</tr>
+					<tr>
+						<td>募集币种:</td>
+						<td><input type="text" th:value="${project.raiseCurrency}" disabled="disabled"/></td>
+						<td>投资币种:</td>
+						<td><input type="text" th:value="${project.investCurrency}" disabled="disabled"/></td>
+						<td>融资方:</td>
+						<td><input type="text" th:value="${project.financier}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>投资顾问:</td>
+						<td><input type="text" value="多项值反显.投顾1,投顾2.." disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>项目来源方:</td>
+						<td><input type="text" th:value="${project.projectCompany}" disabled="disabled"/></td>
+						<td>来源方部门:</td>
+						<td><input type="text" th:value="${project.projectCompanyDepartment}" disabled="disabled"/></td>
+						<td>来源方对接人A:</td>
+						<td><input type="text" th:value="${project.dockingPeopleA}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>来源方对接人B:</td>
+						<td><input type="text" th:value="${project.dockingPeopleB}" disabled="disabled"/></td>
+						<td>来源方对接人C:</td>
+						<td><input type="text" th:value="${project.dockingPeopleC}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>销售渠道:</td>
+						<td>
+							<select name="salesChannels">
+								<option value="管理人">管理人</option>
+								<option value="投资顾问">投资顾问</option>
+								<option value="项目来源方">项目来源方</option>
+								<option value="客户项目银行">客户项目银行</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>是否结构化:</td>
+						<td><input type="text" th:value="${project.isStructuring}" disabled="disabled"></td>
+						<td>结构类型:</td>
+						<td>
+							<select name="structureType">
+									<option value="优先">优先</option>
+									<option value="次级">次级</option>
+							</select>
+						</td>
+						<td>合同前缀:</td>
+						<td><input type="text" name="contractPrefix" id="contractPrefix" value=""/></td>
+					</tr>
+					<tr>
+						<td>产品风险等级:</td>
+						<td>
+							<select name="productRisk">
+									<option value="低">低</option>
+									<option value="中低">中低</option>
+									<option value="中">中</option>
+									<option value="中高">中高</option>
+									<option value="高">高</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>适合客户风险等级</td>
+						<td>
+							<select name="customerRiskLevel">
+									<option value="专业投资者">专业投资者</option>
+									<option value="C1">C1</option>
+									<option value="C2">C2</option>
+									<option value="C3">C3</option>
+									<option value="C4">C4</option>
+									<option value="C5">C5</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>产品描述:</td>
+						<td colspan="5">
+							<input type="text" value="" id="productDescription" name="productDescription" placeholder="输入文本" style="width: 93%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td>备注:</td>
+						<td colspan="5">
+							<input type="text" value="" name="note" placeholder="输入文本" style="width: 93%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td>收益类型:</td>
+						<td>
+							<select name="revenueType">
+									<option value="固定收益">固定收益</option>
+									<option value="浮动收益">浮动收益</option>
+									<option value="净值型">净值型</option>
+									<option value="现金管理型">现金管理型</option>
+							</select>
+						</td>
+						<td>收益分配周期:</td>
+						<td>
+							<select name="distributionCycle">
+									<option value="周">周</option>
+									<option value="旬">旬</option>
+									<option value="月度">月度</option>
+									<option value="季度">季度</option>
+									<option value="年度">年度</option>
+									<option value="到期一次付清">到期一次付清</option>
+									<option value="其他">其他</option>
+							</select>
+						</td>
+						<td>收益分配描述:</td>
+						<td><input type="text" name="distributionDescription" value="" placeholder="输入描述..."/></td>
+					</tr>
+					<tr>
+						<td>开放周期</td>
+						<td>
+							<select name="openCycle">
+								<option value="周">周</option>
+								<option value="旬">旬</option>
+								<option value="月度">月度</option>
+								<option value="季度">季度</option>
+								<option value="年度">年度</option>
+								<option value="到期一次付清">到期一次付清</option>
+								<option value="其他">其他</option>
+							</select>
+						</td>
+						<td>开放期描述:</td>
+						<td><input type="text" name="openCycleDescription" value="" placeholder="输入描述..."/></td>
+					</tr>
+					<tr>
+						<td>封闭期:</td>
+						<td><input type="text" id="closePeriod" name="closePeriod" value="" placeholder="请输入正整数"/></td>
+						<td id="info2" style="color:red;text-align: left"></td>
+						<td>封闭期单位:
+							<select name="closedUnit">
+									<option value="年">年</option>
+									<option value="月">月</option>
+									<option value="日">日</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>是否可赎回:</td>
+						<td>
+							<select name="redeemable">
+									<option value="是">是</option>
+									<option value="否">否</option>
+							</select>
+						</td>
+						<td>赎回费率:</td>
+						<td><input type="text" value="" id="redeemableRate" name="redeemableRate" placeholder="输入...允许两位小数"/></td>
+						<td id="info3" style="color:red;text-align: left" colspan="2"></td>
+					</tr>
+					<tr>
+						<td>赎回限制:</td>
+						<td colspan="3"><input type="text" id="redeemableLimit" value="" name="redeemableLimit" placeholder="输入文本" style="width: 90%;"/></td>
+						<td>是否允许追加:</td>
+						<td>
+							<select name="isAppend">
+									<option value="是">是</option>
+									<option value="否">否</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>募集账号:</td>
+						<td><input type="text" th:value="${project.investAccount}" disabled="disabled"/></td>
+						<td>募集银行:</td>
+						<td><input type="text" th:value="${project.investBank}" disabled="disabled"/></td>
+						<td>募集户名:</td>
+						<td><input type="text" th:value="${project.investUserName}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>保管账号:</td>
+						<td><input type="text" th:value="${project.custodyAccount}" disabled="disabled"/></td>
+						<td>保管银行:</td>
+						<td><input type="text" th:value="${project.custodyBank}" disabled="disabled"/></td>
+						<td>保管户名:</td>
+						<td><input type="text" th:value="${project.custodyUserName}" disabled="disabled" /></td>
+					</tr>
+					<tr>
+						<td>产品经理A:</td>
+						<td><input type="text" th:value="${project.productManagerA}" disabled="disabled"/></td>
+						<td>产品经理B:</td>
+						<td><input type="text" th:value="${project.productManagerB}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>运营经理A:</td>
+						<td><input type="text" id="operationManagerA" name="operationManagerA" value="张三" /></td>
+						<td>运营经理B:</td>
+						<td><input type="text" id="operationManagerB" name="operationManagerB" value="李四" /></td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<input id="addProduct" disabled="disabled" type="button" value="新建" class="btn btn-info"/>
+							<a class="btn btn-default" onclick="history.go(-1);">取消</a>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div id="content">
+			<div id="disappare" style="display:none;">
+				<h2 align="center">新建成功</h2>
+			</div>
+		</div>
+		<script type="text/javascript">
+            function tip() {
+                $("#disappare").show().delay(1000).hide(500);
+            }
+
+            //验证产品名称是否重复
+			$("#productName").blur(function () {
+				var productName = $("#productName").val();
+				if(productName!==null && productName!==''){
+                    $.ajax({
+                        type: 'post',
+                        dataType: 'json',
+                        url: '[[@{/product/checkProductName}]]',
+                        data: {
+                            productName: productName
+                        },
+                        cache: false,
+                        async: true,
+                        success: function (data) {
+                            if (null !== data) {
+                                if (data.message === "y") {
+                                   $("#info").text("名称可用");
+                                    $("#addProduct").attr("disabled",false);
+                                } else if (data.message === "n") {
+                                    $("#info").text("该名称已存在");
+                                    $("#addProduct").attr("disabled",true);
+                                    $("#productName").val("");
+                                }
+                            }
+                        }
+                    });
+				}else{
+                    $("#info").text("请输入产品名称");
+				}
+            });
+
+			//产品新建非空验证
+            $("#addProduct").click(function () {
+                var productName=$("#productName").val();
+                var productTo=$("#productTo").val();
+                var contractPrefix=$("#contractPrefix").val();
+                var productDescription=$("#productDescription").val();
+                var closePeriod=$("#closePeriod").val();
+                var redeemableRate=$("#redeemableRate").val();
+                var redeemableLimit=$("#redeemableLimit").val();
+                var operationManagerA=$("#operationManagerA").val();
+                var operationManagerB=$("#operationManagerB").val();
+                if(productName.length!==0 && productTo.length!==0 && contractPrefix.length!==0
+					&& productDescription.length!==0 && closePeriod.length!==0
+					&& redeemableRate.length!==0 && redeemableLimit.length!==0
+					&& operationManagerA.length!==0 && operationManagerB.length!==0){
+                    $("#addProductForm").submit();
+                    tip();
+                }else {
+                    alert("产品信息请填写完整！");
+
+                }
+            });
+            //封闭期输入,正则表达式验证
+            $("#closePeriod").blur(function () {
+                var closePeriod = $("#closePeriod").val();
+                if (closePeriod === null || closePeriod === "") {
+                    $("#info2").html("封闭期不得为空");
+                } else {
+                    var reg = /^[1-9]{1,}[\d]*$/;
+                    if (!reg.test(closePeriod)) {
+                        $("#info2").html("请输入正整数");
+                        $("#closePeriod").val("");
+                    } else {
+                        $("#info2").html("");
+                    }
+                }
+            });
+            //赎回费率输入,正则表达式验证
+            $("#redeemableRate").blur(function () {
+                var redeemableRate = $("#redeemableRate").val();
+                if (redeemableRate === null || redeemableRate === "") {
+                    $("#info3").html("赎回费率不得为空");
+                } else {
+                    var reg = /^([1-9]\d*|0)(\.\d{1,2})?$/;
+                    if (!reg.test(redeemableRate)) {
+                        $("#info3").html("请输入正确格式(允许两位小数)");
+                        $("#redeemableRate").val("");
+                    } else {
+                        $("#info3").html("");
+                    }
+                }
+            });
+		</script>
+	</body>
+</html>

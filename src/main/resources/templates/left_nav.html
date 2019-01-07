@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<style>
+			.nav-stacked a {
+				color: white;
+			}
+			
+			.nav-stacked a:hover {
+				color: #5bc0de;
+			}
+			html,body,#nav,#box{
+				height: 100%;margin:0;padding:0;
+			}
+		</style>
+		<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#product_management").click(function() {
+					$("#product_search").slideToggle(10);
+				})
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="nav" class="navbar navbar-inverse navbar-left">
+			<div id="box" align="center">
+				<ul class="nav nav-stacked nav-pills">
+					<li>
+						<a href="#">客户管理</a>
+					</li>
+					<li>
+						<a href="">项目管理</a>
+					</li>
+					<li id="product_management">
+						<a>产品管理</a>
+					</li>
+					<ul style="display: none;" id="product_search">
+						<li>
+							<a th:href="@{/product/selectProduct}" target="mainFrame">产品查询</a>
+						</li>
+					</ul>
+					<li>
+						<a href="">发行管理</a>
+					</li>
+					<li>
+						<a href="">系统管理</a>
+					</li>
+					<li>
+						<a href="">收款收据管理</a>
+					</li>
+					<li>
+						<a href="">报表管理</a>
+					</li>
+					<li>
+						<a href="">系统管理</a>
+					</li>
+					<li>
+						<a href="">活动管理</a>
+					</li>
+					<li>
+						<a href="">APP运营管理</a>
+					</li>
+					<li>
+						<a href="">绩效管理</a>
+					</li>
+					<li>
+						<a href="">系统报表</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+
+</html>

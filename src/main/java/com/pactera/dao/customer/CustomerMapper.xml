@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.customer.CustomerMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="customerMap" type="CustomerContract" >
+		<id column="customerId" property="customerId"/>
+		<result column="customerName" property="customerName" />
+		<result column="credentialsType" property="credentialsType" />
+		<result column="certificateNumber" property="certificateNumber" />
+		<result column="certificateValidityPeriod" property="certificateValidityPeriod" />
+		<result column="birthday" property="birthday" />
+		<result column="gender" property="gender" />
+		<result column="nationality" property="nationality" />
+		<result column="maritalStatus" property="maritalStatus" />
+		<result column="isFact" property="isFact" />
+		<result column="grade" property="grade" />
+		<result column="riskRating" property="riskRating" />
+		<result column="zodiac" property="zodiac" />
+		<result column="constellation" property="constellation" />
+		<result column="nation" property="nation" />
+		<result column="phoneNumber" property="phoneNumber" />
+		<result column="address" property="address" />
+		<result column="email" property="email" />
+		<result column="financialManager" property="financialManager" />
+		<result column="contactNumber" property="contactNumber" />
+		<result column="job" property="job" />
+		<result column="remark" property="remark" />
+		<result column="contactPreference" property="contactPreference" />
+
+		<result property="contractId" column="contractId"/>
+		<result column="contractNo" property="contractNo" />
+		<result column="productCode" property="productCode" />
+		<result column="productName" property="productName" />
+		<result column="stockShare" property="stockShare" />
+		<result column="accountBank" property="accountBank" />
+		<result column="accountName" property="accountName" />
+		<result column="bankAccount" property="bankAccount" />
+		<result column="telephone" property="telephone" />
+		<result column="postcode" property="postcode" />
+		<result column="salesModel" property="salesModel" />
+		<result column="salesChannel" property="salesChannel" />
+		<result column="expiryDate" property="expiryDate" />
+		<result column="incomeLevelTerm" property="incomeLevelTerm" />
+		<result column="expectedRate" property="expectedRate" />
+		<result column="customerManager" property="customerManager" />
+		<result column="signingTime" property="signingTime" />
+		<result column="subscriptionAmount" property="subscriptionAmount" />
+	</resultMap>
+
+
+	<select id="getCustomerList" resultMap="customerMap">
+		SELECT * FROM customer,contract WHERE customer.customerId=contract.customerId
+AND productCode=#{productCode}
+	</select>
+
+	<select id="getCustomerContractDetail" resultMap="customerMap">
+SELECT * FROM customer,contract WHERE customer.customerId = contract.customerId
+AND contract.contractId = #{contractId}
+	</select>
+
+	<select id="conditionSelect" resultMap="customerMap">
+		SELECT customer.customerName,customer.phoneNumber,customer.email,
+contract.productName,contractNo,contractId,stockShare,salesChannel,
+customerManager FROM contract INNER JOIN customer
+ON customer.customerId = contract.customerId
+<where>
+	<if test="customerName!=null and customerName!=''">
+		AND customerName LIKE CONCAT('%',#{customerName},'%')
+	</if>
+	<if test="contractNo!=null and contractNo!=''">
+		AND contractNo LIKE CONCAT('%',#{contractNo},'%')
+	</if>
+	<if test="customerManager!=null and customerManager!=''">
+		AND customerManager LIKE CONCAT('%',#{customerManager},'%')
+	</if>
+	<if test="salesChannel!=null and salesChannel!=''">
+		AND salesChannel LIKE CONCAT('%',#{salesChannel},'%')
+	</if>
+	<if test="stockStart!=null and stockStart!='' and stockEnd!=null and stockEnd!=''">
+		AND stockShare BETWEEN #{stockStart} AND #{stockEnd}
+	</if>
+	<if test="isEmailNull!='' and isEmailNull!=null and isEmailNull==1">
+		AND email IS NULL
+	</if>
+	<if test="isEmailNull!='' and isEmailNull!=null and isEmailNull==0">
+		AND email IS NOT NULL
+	</if>
+
+	<if test="productCode!=null and productCode!=''">
+		AND productCode=#{productCode}
+	</if>
+</where>
+
+	</select>
+
+
+</mapper>

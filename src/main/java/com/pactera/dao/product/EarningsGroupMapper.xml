@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pactera.dao.product.EarningsGroupMapper">
+    <!-- ResultMap定义-->
+    <resultMap id="earningsGroupMap" type="EarningsGroup" >
+        <id column="id" property="id" />
+        <result column="groupName" property="groupName" />
+        <result column="earningsId" property="earningsId" />
+        <result column="incomeLevel" property="incomeLevel" />
+        <result column="lowerLimit" property="lowerLimit" />
+        <result column="upperLimit" property="upperLimit" />
+        <result column="expectedRate" property="expectedRate" />
+        <result column="term" property="term" />
+        <result column="termUnit" property="termUnit" />
+        <result column="note" property="note" />
+        <result column="productCode" property="productCode"/>
+        <result column="status" property="status"/>
+        <result column="groupStatus" property="groupStatus"/>
+    </resultMap>
+
+
+    <select id="queryEarningsGroup" resultMap="earningsGroupMap" parameterType="Integer">
+        SELECT * FROM earningsgroup eg INNER JOIN earnings e
+        ON e.id=eg.earningsId WHERE productCode=#{productCode}
+    </select>
+
+    <select id="getGroupNameCount" parameterType="String" resultType="Integer">
+        SELECT COUNT(1) FROM earningsgroup WHERE groupName=#{groupName}
+    </select>
+
+    <insert id="addEarningsGroup">
+        INSERT INTO earningsgroup (groupName, earningsId)
+	    VALUES (#{groupName}, #{earningsId})
+    </insert>
+
+    <delete id="deleteGroup" parameterType="String">
+        DELETE FROM earningsgroup WHERE groupName=#{groupName}
+    </delete>
+
+    <select id="queryGroupStatus" parameterType="String" resultMap="earningsGroupMap">
+        SELECT groupStatus FROM earningsgroup WHERE groupName=#{groupName}
+    </select>
+
+    <select id="getCountByEarningsId" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(1) FROM earningsgroup WHERE earningsId=#{earningsId}
+    </select>
+
+</mapper>

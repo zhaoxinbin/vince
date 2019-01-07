@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.product.NetvalueMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="netvalueMap" type="Netvalue" >
+		<id column="id" property="id"/>
+		<result column="productCode" property="productCode" />
+		<result column="batch" property="batch" />
+		<result column="netValue" property="netValue" />
+		<result column="cumulativeNetValue" property="cumulativeNetValue" />
+		<result column="valuationDate" property="valuationDate" />
+		<result column="releaseDate" property="releaseDate" />
+		<result column="operator" property="operator" />
+		<result column="operationTime" property="operationTime" />
+	</resultMap>
+
+	<select id="getNetvalueListByProductCode" resultMap="netvalueMap" parameterType="Integer">
+		SELECT * FROM netvalue WHERE productCode=#{productCode}
+	</select>
+
+
+	<select id="getNetvalueListByValuationDateAndBatch" resultMap="netvalueMap">
+		SELECT * FROM netvalue
+		<where>
+			<if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+				valuationDate BETWEEN #{startTime} AND #{endTime}
+			</if>
+			<if test="batch!=null and batch!=''">
+				AND batch=#{batch}
+			</if>
+			<if test="productCode!=null and productCode!=''">
+				AND productCode=#{productCode}
+			</if>
+		</where>
+	</select>
+
+</mapper>

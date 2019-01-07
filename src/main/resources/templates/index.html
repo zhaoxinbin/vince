@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" href="/static/css/style.css" />
+	</head>
+
+<frameset rows="8.5%,*" cols="*" frameborder="yes" border="0" framespacing="0"  >
+    <frame th:src="@{/top_nav}" scrolling="No" noresize="noresize"/>
+    <frameset cols="10%,*" frameborder="yes" border="0" framespacing="0">
+        <frame th:src="@{/left_nav}"/>
+        <frame th:src="@{/main}" name="mainFrame"/>
+    </frameset>
+</frameset>
+</html>

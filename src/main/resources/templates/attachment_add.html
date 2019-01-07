@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<style>
+			#disappare {
+				border: 3px solid #ccc;
+				border-radius: 5px;
+				background: #fff;
+				font-size: 20px;
+				width: 200px;
+				height: 90px;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				margin: -125px 0 0 -150px;
+			}
+
+			#disappare h2 {
+				height: 35px;
+				line-height: 35px;
+				text-indent: 5px;
+			}
+		</style>
+		<script type="text/javascript" th:src="@{../static/js/jquery-3.3.1.min.js}"></script>
+		<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="pagemark">
+				<a><button class="btn btn-default" style="width: 80px;">产品信息</button></a>
+				<a><button class="btn btn-info" style="width: 80px;">附件信息</button></a>
+			</div>
+			<p style="background-color: #5bc0de;">添加附件</p>
+			<div>
+				<form id="addAcc" th:action="@{/accessories/addAccessories}" method="post" enctype="multipart/form-data">
+					<table class="table table-bordered">
+						<tr>
+							<td>添加文档</td>
+							<td colspan="3"><input type="file" id="file" name="file"/></td>
+						</tr>
+						<tr>
+							<td>文件名称:</td>
+							<td><input type="text" name="fileName" id="fileName" value=""/></td>
+							<td>文档类型:</td>
+							<td>
+								<select name="documentType" id="documentType">
+									<option value="信托合同">信托合同</option>
+									<option value="基金合同">基金合同</option>
+									<option value="合伙协议">合伙协议</option>
+									<option value="信托计划说明书">信托计划说明书</option>
+									<option value="推介材料">推介材料</option>
+									<option value="路演视频">路演视频</option>
+									<option value="补充协议">补充协议</option>
+									<option value="管理报告">管理报告</option>
+									<option value="净值公告">净值公告</option>
+									<option value="临时披露材料">临时披露材料</option>
+									<option value="退出说明材料">退出说明材料</option>
+									<option value="清算报告">清算报告</option>
+									<option value="其他涉密材料">其他涉密材料</option>
+									<option value="其他">其他</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>附件说明:</td>
+							<td colspan="3">
+								<input type="text" name="attachmentShows" id="attachmentShows" value="" placeholder="输入文本内容..." style="width: 76.5%;"/>
+							</td>
+							<input type="hidden" name="projectId" th:value="${projectId}"/>
+							<input type="hidden" name="productCode" th:value="${productCode}"/>
+							<input type="hidden" name="founder" th:value="founder"/>
+
+						</tr>
+
+					</table>
+					<div align="center">
+					<input id="upload" type="button" value="上传" class="btn btn-info" />
+					<a class="btn btn-default" th:href="@{/accessories/selectAccessoriesByProductCode(productCode=${productCode},projectId=${projectId})}" >返回</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="content">
+			<div id="disappare" style="display:none;">
+				<h2 align="center">上传成功</h2>
+			</div>
+		</div>
+		<script type="text/javascript">
+           function tip() {
+               $("#disappare").show().delay(1000).hide(500);
+           }
+
+			//附件上传非空验证
+           $("#upload").click(function () {
+               var file=$("#file").val();
+               var fileName=$("#fileName").val();
+               var documentType=$("#documentType").val();
+               var attachmentShows=$("#attachmentShows").val();
+               if(file.length!=0 && fileName.length!=0 && documentType.length!=0 && attachmentShows.length!=0){
+                   $("#addAcc").submit();
+                   tip();
+			   }else {
+                   /**
+                    * 数据没输入完整
+                    */
+                   alert("附件信息请填写完整！");
+                   return;
+			   }
+           })
+
+
+
+
+		</script>
+	</body>
+</html>

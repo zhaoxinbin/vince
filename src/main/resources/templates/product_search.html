@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        tr {
+            height: 47px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div>产品管理 > 产品查询</div>
+    <div align="center">
+        <form th:action="@{/product/keywordSelectProduct}">
+            <table width="65%">
+                <tr>
+                    <td>产品代码:</td>
+                    <td><input type="text" id="productCode" name="productCode" th:value="${productCode}" placeholder="输入文本..."/></td>
+                    <td>产品名称:</td>
+                    <td><input type="text" id="productName" name="productName" th:value="${productName}" placeholder="输入文本"/></td>
+                    <td>产品风险等级:</td>
+                    <td>
+                        <select name="productRisk" id="productRisk">
+                            <option value="">全部</option>
+                            <option th:selected="${productRisk}=='低'" value="低">低</option>
+                            <option th:selected="${productRisk}=='中低'" value="中低">中低</option>
+                            <option th:selected="${productRisk}=='中'" value="中">中</option>
+                            <option th:selected="${productRisk}=='中高'" value="中高">中高</option>
+                            <option th:selected="${productRisk}=='高'" value="高">高</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>收益类型:</td>
+                    <td>
+                        <select name="revenueType" id="revenueType">
+                            <option value="">全部</option>
+                            <option th:selected="${revenueType}=='固定收益'" value="固定收益">固定收益</option>
+                            <option th:selected="${revenueType}=='浮动收益'" value="浮动收益">浮动收益</option>
+                            <option th:selected="${revenueType}=='净值型'" value="净值型">净值型</option>
+                            <option th:selected="${revenueType}=='现金管理型'" value="现金管理型">现金管理型</option>
+                        </select>
+                    </td>
+                    <td>销售渠道:</td>
+                    <td colspan="2">
+                        <select name="salesChannels" id="salesChannels">
+                            <option value="">全部</option>
+                            <option th:selected="${salesChannels}=='管理人'" value="管理人">管理人</option>
+                            <option th:selected="${salesChannels}=='投资顾问'" value="投资顾问">投资顾问</option>
+                            <option th:selected="${salesChannels}=='项目来源方'" value="项目来源方">项目来源方</option>
+                            <option th:selected="${salesChannels}=='客户项目银行'" value="客户项目银行">客户项目银行</option>
+                        </select>
+                        <input type="hidden" name="pageSize" th:value="${pageSize}">
+                    </td>
+
+                </tr>
+                <tr align="center">
+                    <td colspan="6">
+                        <input type="submit" value="查询" class="btn btn-info"/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" value="重置" class="btn btn-danger"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <hr/>
+</div>
+
+<div class="container">
+    <div>
+        <a data-toggle="modal" href="#addProduct">
+            <button class="btn btn-success">新建</button>
+        </a>
+    </div>
+    <!-- 新建产品Modal框-->
+    <div class="modal fade" id="addProduct">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4 class="modal-title">新建产品</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <form th:action="@{/product/getProjectModal}" method="post">
+                        <td>项目类型:</td>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <td>
+                            <select name="projectType">
+                                <option value="信托">信托</option>
+                                <option value="私募基金">私募基金</option>
+                                <option value="资管计划">资管计划</option>
+                            </select>
+                        </td>
+                        <br/><br/>
+                        <td>关联项目名称:</td>
+                        <td>
+                            <select name="projectName">
+                                <option value="工商企业">工商企业</option>
+                                <option value="信托">信托</option>
+                                <option value="房地产投资">房地产投资</option>
+                            </select>
+                        </td>
+                        <br/><br/>
+                        <input type="submit" class="btn btn-info" value="确定"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <tr bgcolor="#F2F2F2">
+            <td>操作</td>
+            <td>项目类型</td>
+            <td>产品分类</td>
+            <td>产品代码</td>
+            <td>产品名称</td>
+            <td>销售渠道</td>
+            <td>收益类型</td>
+            <td>产品风险等级</td>
+            <td>产品经理A</td>
+            <td>产品经理B</td>
+            <td>运营经理A</td>
+            <td>运营经理B</td>
+        </tr>
+        <tr th:each="product:${pageInfo.list}">
+            <td>
+                <a th:href="@{/product/updateProductPage(projectId=${product.project.projectId},productCode=${product.productCode})}"><span
+                        class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
+                <a onclick="del(this)" th:data-id="${product.productCode}"><span
+                        class="glyphicon glyphicon-trash"></span></a>
+            </td>
+            <td th:text="${product.project.projectType}"></td>
+            <td th:text="${product.project.productType}"></td>
+            <td th:text="${product.productCode}"></td>
+            <td><a th:text="${product.productName}"
+                   th:href="@{/product/selectProductDetail(projectId=${product.project.projectId},productCode=${product.productCode})}"></a>
+            </td>
+            <td th:text="${product.salesChannels}"></td>
+            <td th:text="${product.revenueType}"></td>
+            <td th:text="${product.productRisk}"></td>
+            <td th:text="${product.project.productManagerA}"></td>
+            <td th:text="${product.project.productManagerB}"></td>
+            <td th:text="${product.operationManagerA}"></td>
+            <td th:text="${product.operationManagerB}"></td>
+        </tr>
+    </table>
+
+    <div align="center">
+
+        <span>
+            共<span th:text="${pageInfo.total}"></span>条记录
+            [
+            <span th:text="${pageInfo.pageNum}"></span>
+            /
+            <span th:text="${pageInfo.pages}"></span>
+            ]
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <span>
+            <a th:href="@{/product/keywordSelectProduct(pageSize=${pageSize},productCode=${productCode},productName=${productName},productRisk=${productRisk},revenueType=${revenueType},salesChannels=${salesChannels})}">首页</a>
+            <a th:href="@{/product/keywordSelectProduct(pageNum=${pageInfo.prePage},pageSize=${pageSize},productCode=${productCode},productName=${productName},productRisk=${productRisk},revenueType=${revenueType},salesChannels=${salesChannels})}">上一页</a>
+            <a th:href="@{/product/keywordSelectProduct(pageNum=${pageInfo.nextPage},pageSize=${pageSize},productCode=${productCode},productName=${productName},productRisk=${productRisk},revenueType=${revenueType},salesChannels=${salesChannels})}">下一页</a>
+            <a th:href="@{/product/keywordSelectProduct(pageNum=${pageInfo.pages},pageSize=${pageSize},productCode=${productCode},productName=${productName},productRisk=${productRisk},revenueType=${revenueType},salesChannels=${salesChannels})}">末页</a>
+        </span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>
+            每页显示
+            <select id="pageSize">
+                <option value="5" th:selected="${pageSize}=='5'">5条</option>
+                <option value="10" th:selected="${pageSize}=='10'">10条</option>
+                <option value="15" th:selected="${pageSize}=='15'">15条</option>
+                <option value="25" th:selected="${pageSize}=='25'">25条</option>
+            </select>
+        </span>
+    </div>
+</div>
+<script type="text/javascript">
+    function del(e) {
+        var productCode = e.getAttribute("data-id");
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: '[[@{/contract/checkCountByProductCode}]]',
+            data: {productCode: productCode},
+            traditional: true,//防止深度序列化
+            cache: false,
+            async: true,
+            success: function (data) {
+                if (data.message === "y") {
+                    if (confirm("确定要删除此产品吗?")) {
+                        location.href = "/product/deleteProduct?productCode=" + productCode;
+                    }
+                } else {
+                    alert("警告: 该产品正在合同期，不允许删除！");
+                }
+            }
+        });
+    }
+
+    $("#pageSize").change(function () {
+        var pageSize = $("#pageSize").val();
+        var productCode = $("#productCode").val();
+        var productName = $("#productName").val();
+        var productRisk = $("#productRisk").val();
+        var revenueType = $("#revenueType").val();
+        var salesChannels = $("#salesChannels").val();
+        location.href="/product/keywordSelectProduct?pageSize="+pageSize+"&productCode="+productCode+"&productName="+productName
+        +"&productRisk="+productRisk+"&revenueType="+revenueType+"&salesChannels="+salesChannels;
+    })
+
+</script>
+</body>
+</html>

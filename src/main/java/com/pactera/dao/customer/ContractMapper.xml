@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.customer.ContractMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="contractMap" type="Contract" >
+		<id column="contractId" property="contractId"/>
+		<result column="contractNo" property="contractNo" />
+		<result column="productCode" property="productCode" />
+		<result column="productName" property="productName" />
+		<result column="stockShare" property="stockShare" />
+		<result column="accountBank" property="accountBank" />
+		<result column="accountName" property="accountName" />
+		<result column="bankAccount" property="bankAccount" />
+		<result column="telephone" property="telephone" />
+		<result column="postcode" property="postcode" />
+		<result column="salesModel" property="salesModel" />
+		<result column="salesChannel" property="salesChannel" />
+		<result column="expiryDate" property="expiryDate" />
+		<result column="incomeLevelTerm" property="incomeLevelTerm" />
+		<result column="expectedRate" property="expectedRate" />
+		<result column="customerManager" property="customerManager" />
+		<result column="signingTime" property="signingTime" />
+		<result column="subscriptionAmount" property="subscriptionAmount" />
+		<result column="customerId" property="customerId" />
+	</resultMap>
+
+	<select id="getCountByProductCode" parameterType="Integer" resultType="Integer">
+		SELECT COUNT(1) FROM contract WHERE productCode=#{productCode}
+	</select>
+
+
+
+</mapper>

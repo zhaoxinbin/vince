@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">		
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/default.css"/>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+		<style type="text/css">
+			tr {
+				height: 50px;
+			}
+			.jzlb td{
+				text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+            function autodate(){
+                var r=$("#data").val();
+                var  date=new Date();
+                var  y=date.getFullYear();
+                var  m=(date.getMonth()+1);
+                var	 d=date.getDate();
+                var  datethis;
+                if(r==1){
+                    if(d>7){
+                        datethis=y+"-"+m+"-"+(d-7);
+                    }else{
+                        if(m!=1){
+                            datethis=y+"-"+(m-1)+"-"+((30-7)+d);
+                        }else{
+                            datethis=(y-1)+"-"+"12"+"-"+((30-7)+d);
+                        }
+                    }
+                }else if(r==2){
+                    if(m>1){
+                        datethis=y+"-"+(m-1)+"-"+d;
+                    }else{
+                        datethis=(y-1)+"-"+"12"+"-"+d;
+                    }
+                }
+                else if(r==3){
+                    if(m>3){
+                        datethis=y+"-"+(m-3)+"-"+d;
+                    }else{
+                        datethis=(y-1)+"-"+((m+10)-1)+"-"+d;
+                    }
+
+                }else if(r==4){
+                    datethis=(y-1)+"-"+m+"-"+d;
+                }else if(r==5){
+                    datethis=(y-3)+"-"+m+"-"+d;
+                }else if(r==6){
+                    $("#startTime").attr("type", "date");
+                    $("#endTime").attr("type", "date");
+                    return;
+                }
+
+                $("#startTime").attr("type", "input");
+                $("#startTime").attr("value",datethis);
+                $("#endTime").attr("type", "input");
+                $("#endTime").attr("value",y+"-"+m+"-"+d);
+            }
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			
+			<div id="pagemark">
+				<a th:href="@{/product/selectProductDetail(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">产品信息</button></a>
+				<a th:href="@{/accessories/selectAccessoriesByProductCode(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">附件信息</button></a>
+				<a th:href="@{/customer/getCustomerList(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">客户</button></a>
+				<a th:href="@{/netvalue/getNetvalueListByProductCode(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-info" style="width: 80px;">净值</button></a>
+				<a th:href="@{/earnings/selectByProductCode(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">收益级别</button></a>
+				<a><button class="btn btn-default" style="width: 80px;">投后事项</button></a>
+			</div>
+			<div>
+				<p style="background-color:#5bc0de ;color: white;">净值信息</p>
+			</div>
+			<div align="center">
+				<form th:action="@{/netvalue/getNetvalueListByValuationDateAndBatch}">
+					<table>
+						<tr>
+							<td>估值日期:&nbsp;</td>
+							<td>
+								<select onchange="autodate()"  id="data">
+								<option value="">时间段选择</option>
+								<option value="1">最近一周</option>
+								<option value="2">最近一个月</option>
+								<option value="3">最近三个月</option>
+								<option value="4">最近一年</option>
+								<option value="5">最近三年</option>
+								<option value="6">成立以来</option>
+								</select>
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td><input type="date" name="startTime" id="startTime" th:value="${startTime}" style="width:130px;height:25px;"/></td>
+							<td>&nbsp;~&nbsp;</td>
+							<td><input type="date" name="endTime" id="endTime" th:value="${endTime}" style="width:130px;height:25px;"/></td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td>成立批次:&nbsp;</td>
+							<td>
+								<select name="batch">
+								<option value="">批次选择</option>
+								<option th:selected="${batch}=='第1批次'" value="第1批次">第1批次</option>
+								<option th:selected="${batch}=='第2批次'" value="第2批次">第2批次</option>
+								<option th:selected="${batch}=='第3批次'" value="第3批次">第3批次</option>
+								<option th:selected="${batch}=='第4批次'" value="第4批次">第4批次</option>
+								</select>
+							</td>
+							<!--携带projectId,productCode-->
+							<input type="hidden" name="projectId" th:value="${projectId}"/>
+							<input type="hidden" name="productCode" th:value="${productCode}"/>						</tr>
+						<tr align="center">
+							<td colspan="9">
+								<input type="submit" value="查询" class="btn btn-info" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="reset" value="重置" class="btn btn-danger" />
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div><hr />
+			
+			<!--折线图-->
+			<div class="htmleaf-container">
+				<div class="htmleaf-content">
+					<div style="width:95%;margin:0 auto;">
+						<div>
+							<canvas id="canvas" height="300" width="1200"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!--净值结果列表-->
+			<div>
+				<table class="table table-bordered table-hover jzlb">
+					<tr bgcolor="#F2F2F2">
+						<td>操作</td>
+						<td>成立批次</td>
+						<td>净值</td>
+						<td>累计净值</td>
+						<td>估值日期</td>
+						<td>发布日期</td>
+						<td>操作人</td>
+						<td>操作日期</td>
+					</tr>
+					<tr th:each="netvalue:${pageInfo.list}">
+						<td>详情</td>
+						<td th:text="${netvalue.batch}"></td>
+						<td class="netValue" th:text="${netvalue.netValue}"></td>
+						<td class="cumulativeNetValue" th:text="${netvalue.cumulativeNetValue}"></td>
+						<td class="valuationDate" th:text="${netvalue.valuationDate}"></td>
+						<td th:text="${netvalue.releaseDate}"></td>
+						<td th:text="${netvalue.operator}"></td>
+						<td th:text="${netvalue.operationTime}"></td>
+					</tr>
+				</table>
+			</div>
+			<!--分页-->
+			<div align="center">
+				<span>
+					共<span th:text="${pageInfo.total}"></span>条记录
+					[
+					<span th:text="${pageInfo.pageNum}"></span>
+					/
+					<span th:text="${pageInfo.pages}"></span>
+					]
+				</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span>
+					<a th:href="@{/netvalue/getNetvalueListByValuationDateAndBatch(projectId=${projectId},productCode=${productCode},startTime=${startTime},endTime=${endTime},batch=${batch})}">首页</a>
+					<a th:href="@{/netvalue/getNetvalueListByValuationDateAndBatch(pageNum=${pageInfo.prePage},projectId=${projectId},productCode=${productCode},startTime=${startTime},endTime=${endTime},batch=${batch})}">上一页</a>
+					<a th:href="@{/netvalue/getNetvalueListByValuationDateAndBatch(pageNum=${pageInfo.nextPage},projectId=${projectId},productCode=${productCode},startTime=${startTime},endTime=${endTime},batch=${batch})}">下一页</a>
+					<a th:href="@{/netvalue/getNetvalueListByValuationDateAndBatch(pageNum=${pageInfo.pages},projectId=${projectId},productCode=${productCode},startTime=${startTime},endTime=${endTime},batch=${batch})}">末页</a>
+				</span>
+			</div>
+		</div>
+
+		<script src="/static/js/Chart.js"></script>
+		<script>
+			var vd = document.getElementsByClassName("valuationDate");
+			var vdData=new Array(vd.length);
+			for(var k=0;k<vd.length;k++){
+                vdData[k]= vd[k].innerHTML;
+			}
+
+			var nv = document.getElementsByClassName("netValue");
+			var nvData=new Array(nv.length);
+			for(var i=0;i<nv.length;i++){
+                nvData[i]= nv[i].innerHTML;
+			}
+
+            var cnv = document.getElementsByClassName("cumulativeNetValue");
+			var cnvData=new Array(cnv.length);
+			for(var j=0;j<cnv.length;j++){
+                cnvData[j]= cnv[j].innerHTML;
+			}
+
+            var lineChartData = {
+                labels:vdData,
+				datasets : [
+                    {
+                        label: "净值",
+                        fillColor : "rgba(220,220,220,0.2)",
+                        strokeColor : "rgba(220,220,220,1)",
+                        pointColor : "rgba(220,220,220,1)",
+                        pointStrokeColor : "#fff",
+                        pointHighlightFill : "#fff",
+                        pointHighlightStroke : "rgba(220,220,220,1)",
+						data:nvData
+                    },
+                    {
+                        label: "累计净值",
+                        fillColor : "rgba(151,187,205,0.2)",
+                        strokeColor : "rgba(151,187,205,1)",
+                        pointColor : "rgba(151,187,205,1)",
+                        pointStrokeColor : "#fff",
+                        pointHighlightFill : "#fff",
+                        pointHighlightStroke : "rgba(151,187,205,1)",
+                        data:cnvData
+                    }
+                ]
+            };
+
+            window.onload = function(){
+                var ctx = document.getElementById("canvas").getContext("2d");
+                window.myLine = new Chart(ctx).Line(lineChartData, {
+                    responsive: true
+                });
+            }
+
+		</script>
+	</body>
+</html>

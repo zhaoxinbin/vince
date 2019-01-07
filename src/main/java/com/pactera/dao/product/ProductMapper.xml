@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.product.ProductMapper">
+    <!-- ResultMap定义-->
+    <resultMap id="productMap" type="Product">
+        <id column="productCode" property="productCode"/>
+        <result column="productName" property="productName"/>
+        <result column="salesChannels" property="salesChannels"/>
+        <result column="structureType" property="structureType"/>
+        <result column="revenueType" property="revenueType"/>
+        <result column="contractPrefix" property="contractPrefix"/>
+        <result column="productDescription" property="productDescription"/>
+        <result column="note" property="note"/>
+        <result column="operationManagerA" property="operationManagerA"/>
+        <result column="operationManagerB" property="operationManagerB"/>
+        <result column="productRisk" property="productRisk"/>
+		<result column="customerRiskLevel" property="customerRiskLevel"/>
+        <result column="productTo" property="productTo"/>
+        <result column="distributionCycle" property="distributionCycle"/>
+        <result column="distributionDescription" property="distributionDescription"/>
+        <result column="openCycle" property="openCycle"/>
+        <result column="openCycleDescription" property="openCycleDescription"/>
+        <result column="closePeriod" property="closePeriod"/>
+        <result column="closedUnit" property="closedUnit"/>
+        <result column="redeemable" property="redeemable"/>
+        <result column="redeemableRate" property="redeemableRate"/>
+        <result column="redeemableLimit" property="redeemableLimit"/>
+        <result column="isAppend" property="isAppend"/>
+		<result column="status" property="status"/>
+        <result column="projectId" property="projectId"/>
+        <association property="project" javaType="Project"
+                     resultMap="com.pactera.dao.project.ProjectMapper.projectMap"/>
+    </resultMap>
+
+
+    <select id="queryAll" resultMap="productMap">
+		SELECT * FROM product
+	</select>
+
+    <select id="selectProduct" resultMap="productMap">
+		SELECT project.projectId,product.productCode,project.projectType,project.productType,productName,salesChannels,revenueType,productRisk,productManagerA,productManagerB,operationManagerA,operationManagerB
+		FROM project,product WHERE project.projectId=product.projectId AND product.status = 1
+	</select>
+
+    <select id="selectProductDetail" parameterType="Integer" resultMap="productMap">
+		SELECT * FROM project, product
+WHERE project.projectId=product.projectId
+ AND project.projectId=#{projectId} AND product.productCode=#{productCode}
+	</select>
+
+    <select id="keywordSelectProduct" resultMap="productMap">
+		SELECT project.projectId,project.projectType,project.productType,productCode,productName,salesChannels,revenueType,productRisk,productManagerA,productManagerB,operationManagerA,operationManagerB
+        FROM project INNER JOIN product
+        ON project.projectId=product.projectId
+        <where>
+            <if test="productCode!=null and productCode!=''">
+                AND productCode LIKE CONCAT('%',#{productCode},'%')
+            </if>
+            <if test="productName!=null and productName!=''">
+                AND productName LIKE CONCAT('%',#{productName},'%')
+            </if>
+            <if test="productRisk!=null and productRisk!=''">
+                AND productRisk= #{productRisk}
+            </if>
+            <if test="revenueType!=null and revenueType!=''">
+                AND revenueType=#{revenueType}
+            </if>
+            <if test="salesChannels!=null and salesChannels!=''">
+                AND salesChannels=#{salesChannels}
+            </if>
+			AND product.status = 1
+        </where>
+    </select>
+
+    <select id="getProjectModal" resultMap="com.pactera.dao.project.ProjectMapper.projectMap">
+		SELECT * FROM project WHERE projectType=#{projectType} AND projectName=#{projectName}
+	</select>
+
+    <insert id="addProduct" parameterType="Product">
+        INSERT INTO product
+	(
+	productName,
+	salesChannels,
+	structureType,
+	revenueType,
+	contractPrefix,
+	productDescription,
+	note,
+	operationManagerA,
+	operationManagerB,
+	productRisk,
+	customerRiskLevel,
+	productTo,
+	distributionCycle,
+	distributionDescription,
+	openCycle,
+	openCycleDescription,
+	closePeriod,
+	closedUnit,
+	redeemable,
+	redeemableRate,
+	redeemableLimit,
+	isAppend,
+	projectId
+	)
+	VALUES
+	(
+	#{productName},
+	#{salesChannels},
+	#{structureType},
+	#{revenueType},
+	#{contractPrefix},
+	#{productDescription},
+	#{note},
+	#{operationManagerA},
+	#{operationManagerB},
+	#{productRisk},
+	#{customerRiskLevel},
+	#{productTo},
+	#{distributionCycle},
+	#{distributionDescription},
+	#{openCycle},
+	#{openCycleDescription},
+	#{closePeriod},
+	#{closedUnit},
+	#{redeemable},
+	#{redeemableRate},
+	#{redeemableLimit},
+	#{isAppend},
+	#{projectId}
+	);
+    </insert>
+
+    <update id="updateProduct" parameterType="Product">
+		UPDATE product
+	SET
+	productName = #{productName},
+	salesChannels = #{salesChannels},
+	structureType = #{structureType},
+	revenueType = #{revenueType},
+	contractPrefix = #{contractPrefix},
+	productDescription = #{productDescription},
+	note = #{note},
+	operationManagerA = #{operationManagerA},
+	operationManagerB = #{operationManagerB},
+	productRisk = #{productRisk},
+	customerRiskLevel = #{customerRiskLevel},
+	productTo = #{productTo},
+	distributionCycle = #{distributionCycle},
+	distributionDescription = #{distributionDescription},
+	openCycle = #{openCycle},
+	openCycleDescription = #{openCycleDescription},
+	closePeriod =#{closePeriod},
+	closedUnit = #{closedUnit},
+	redeemable = #{redeemable},
+	redeemableRate = #{redeemableRate},
+	redeemableLimit = #{redeemableLimit},
+	isAppend = #{isAppend},
+	projectId=#{projectId}
+	WHERE
+	productCode=#{productCode};
+	</update>
+
+	<update id="updateProductStatus">
+		UPDATE product SET `status`=#{status} WHERE productCode=#{productCode}
+	</update>
+
+	<select id="checkProductName" parameterType="String" resultType="Integer">
+		SELECT COUNT(1) FROM product WHERE productName =#{productName}
+	</select>
+
+</mapper>

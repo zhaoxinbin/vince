@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">		
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<style>
+			
+			td{
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div id="pagemark">
+				<a><button class="btn btn-info" style="width: 80px;">产品信息</button></a>
+				<a th:href="@{/accessories/selectAccessoriesByProductCode(projectId=${product.project.projectId},productCode=${product.productCode})}"><button class="btn btn-default" style="width: 80px;">附件信息</button></a>
+				<a th:href="@{/customer/getCustomerList(projectId=${product.project.projectId},productCode=${product.productCode})}"><button class="btn btn-default" style="width: 80px;">客户</button></a>
+				<a th:href="@{/netvalue/getNetvalueListByProductCode(projectId=${product.project.projectId},productCode=${product.productCode})}"><button class="btn btn-default" style="width: 80px;">净值</button></a>
+				<a th:href="@{/earnings/selectByProductCode(projectId=${product.project.projectId},productCode=${product.productCode})}"><button class="btn btn-default" style="width: 80px;">收益级别</button></a>
+				<a ><button class="btn btn-default" style="width: 80px;">投后事项</button></a>
+			</div>
+			<div>
+				<p style="background-color:#5bc0de ;">查看产品信息</p>
+			</div>
+			<p>基本信息</p>
+
+				<table class="table" width="65%">
+					<tr>
+						<td>产品代码:</td>
+						<td><input type="text" th:value="${product.productCode}" disabled="disabled"/></td>
+						<td>产品名称:</td>
+						<td><input type="text" th:value="${product.productName}"/></td>
+						<td>项目类型:</td>
+						<td><input type="text" th:value="${product.project.projectType}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>产品分类:</td>
+						<td><input type="text" th:value="${product.project.productType}" disabled="disabled"/></td>
+						<td>项目名称:</td>
+						<td><input type="text" th:value="${product.project.projectName}" disabled="disabled"/></td>
+						<td>外文名:</td>
+						<td><input type="text" th:value="${product.project.projectEnglishName}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>投资方式:</td>
+						<td><input type="text" th:value="${product.project.investMethod}" disabled="disabled"/></td>
+						<td>资金投向:</td>
+						<td><input type="text" th:value="${product.project.moneyTo}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td style="color: red;">产品投向:</td>
+						<td>
+							<input type="text" th:value="${product.productTo}"/>
+							<!--<label><input type="checkbox" value="tx2"/>投向2</label>-->
+							<!--<label><input type="checkbox" value="tx3"/>投向3</label>-->
+						</td>
+					</tr>
+					<tr>
+						<td>募集币种:</td>
+						<td><input type="text" th:value="${product.project.raiseCurrency}" disabled="disabled"/></td>
+						<td>投资币种:</td>
+						<td><input type="text" th:value="${product.project.investCurrency}" disabled="disabled"/></td>
+						<td>融资方:</td>
+						<td><input type="text" th:value="${product.project.financier}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>投资顾问:</td>
+						<td><input type="text" value="多项值反显.投顾1,投顾2.." disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>项目来源方:</td>
+						<td><input type="text" th:value="${product.project.projectCompany}" disabled="disabled"/></td>
+						<td>来源方部门:</td>
+						<td><input type="text" th:value="${product.project.projectCompanyDepartment}" disabled="disabled"/></td>
+						<td>来源方对接人A:</td>
+						<td><input type="text" th:value="${product.project.dockingPeopleA}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>来源方对接人B:</td>
+						<td><input type="text" th:value="${product.project.dockingPeopleB}" disabled="disabled"/></td>
+						<td>来源方对接人C:</td>
+						<td><input type="text" th:value="${product.project.dockingPeopleC}" disabled="disabled"/></td>
+					</tr>
+					<tr>
+						<td>销售渠道:</td>
+						<td>
+							<input type="text" th:value="${product.salesChannels}"/>
+							<!--<label><input type="checkbox" th:value="qd2"/>渠道2</label>-->
+							<!--<label><input type="checkbox" th:value="qd3"/>渠道3</label>-->
+						</td>
+					</tr>
+					<tr>
+						<td>是否结构化:</td>
+						<td><input type="text" th:value="${product.project.isStructuring}"></td>
+						<td>结构类型:</td>
+						<td>
+							<input type="text" th:value="${product.structureType}"/>
+							<!--<select name="structureType">-->
+								<!--<option value="优先">优先</option>-->
+								<!--<option value="次级">次级</option>-->
+							<!--</select>-->
+						</td>
+						<td>合同前缀:</td>
+						<td><input type="text" th:value="${product.contractPrefix}"/></td>
+					</tr>
+					<tr>
+						<td>产品风险等级:</td>
+						<td>
+							<input type="text" th:value="${product.productRisk}"/>
+						</td>
+					</tr>
+					<tr>
+						<td>适合客户风险等级</td>
+						<td>
+							<input type="text" th:value="${product.customerRiskLevel}"/>
+						</td>
+
+					</tr>
+					<tr>
+						<td>产品描述:</td>
+						<td colspan="5">
+							<input type="text" th:value="${product.productDescription}" style="width: 93%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td>备注:</td>
+						<td colspan="5">
+							<input type="text" th:value="${product.note}" style="width: 93%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td>收益类型:</td>
+						<td>
+							<input type="text" th:value="${product.revenueType}">
+						</td>
+						<td>收益分配周期:</td>
+						<td th:text="${product.distributionCycle}"></td>
+
+						<td>收益分配描述:</td>
+						<td><input type="text" th:value="${product.distributionDescription}" /></td>
+					</tr>
+					<tr>
+						<td>开放周期</td>
+						<td>
+							<input type="text" th:value="${product.openCycle}" />
+						</td>
+						<td>开放期描述:</td>
+						<td><input type="text" th:value="${product.openCycleDescription}" placeholder="输入描述..."/></td>
+					</tr>
+					<tr>
+						<td>封闭期:</td>
+						<td><input type="text" th:value="${product.closePeriod}" placeholder="请输入正整数"/></td>
+						<td>封闭期单位:</td>
+						<td>
+							<input type="text" th:value="${product.closedUnit}" />
+						</td>
+					</tr>
+					<tr>
+						<td>是否可赎回:</td>
+						<td>
+							<input type="text" th:value="${product.redeemable}" />
+						</td>
+						<td>赎回费率:</td>
+						<td><input type="text" th:value="${product.redeemableRate}"/></td>
+					</tr>
+					<tr>
+						<td>赎回限制:</td>
+						<td colspan="3"><input type="text" th:value="${product.redeemableLimit}"  style="width: 90%;"/></td>
+						<td>是否允许追加:</td>
+						<td>
+							<input type="text" th:value="${product.isAppend}" />
+						</td>
+					</tr>
+					<tr>
+						<td>募集账号:</td>
+						<td><input type="text" th:value="${product.project.investAccount}" /></td>
+						<td>募集银行:</td>
+						<td><input type="text" th:value="${product.project.investBank}" /></td>
+						<td>募集户名:</td>
+						<td><input type="text" th:value="${product.project.investUserName}" /></td>
+					</tr>
+					<tr>
+						<td>保管账号:</td>
+						<td><input type="text" th:value="${product.project.custodyAccount}" /></td>
+						<td>保管银行:</td>
+						<td><input type="text" th:value="${product.project.custodyBank}" /></td>
+						<td>保管户名:</td>
+						<td><input type="text" th:value="${product.project.custodyUserName}" /></td>
+					</tr>
+					<tr>
+						<td>产品经理A:</td>
+						<td><input type="text" th:value="${product.project.productManagerA}" /></td>
+						<td>产品经理B:</td>
+						<td><input type="text" th:value="${product.project.productManagerB}" /></td>
+					</tr>
+					<tr>
+						<td>运营经理A:</td>
+						<td><input type="text" th:value="${product.operationManagerB}" /></td>
+						<td>运营经理B:</td>
+						<td><input type="text" th:value="${product.operationManagerB}" /></td>
+					</tr>
+					
+				</table>
+
+		</div>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.project.ProjectMapper">
+	<!-- ResultMap定义-->
+	<resultMap id="projectMap" type="Project" >
+		<result column="projectId" property="projectId" />
+		<result column="projectName" property="projectName" />
+		<result column="projectEnglishName" property="projectEnglishName" />
+		<result column="size" property="size" />
+		<result column="timeLimit" property="timeLimit" />
+		<result column="timeLimitUnit" property="timeLimitUnit" />
+		<result column="buildDate" property="buildDate" />
+		<result column="endDate" property="endDate" />
+		<result column="productType" property="productType" />
+		<result column="projectCompany" property="projectCompany" />
+		<result column="dockingPeopleA" property="dockingPeopleA" />
+		<result column="dockingPeopleB" property="dockingPeopleB" />
+		<result column="dockingPeopleC" property="dockingPeopleC" />
+		<result column="productManagerA" property="productManagerA" />
+		<result column="productManagerB" property="productManagerB" />
+		<result column="projectType" property="projectType" />
+		<result column="investMethod" property="investMethod" />
+		<result column="moneyTo" property="moneyTo" />
+		<result column="raiseCurrency" property="raiseCurrency" />
+		<result column="investCurrency" property="investCurrency" />
+		<result column="isStructuring" property="isStructuring" />
+		<result column="incomeDistributionMethod" property="incomeDistributionMethod" />
+		<result column="incomeDistributionFrequency" property="incomeDistributionFrequency" />
+		<result column="assetManagementReportFrequency" property="assetManagementReportFrequency" />
+		<result column="financier" property="financier" />
+		<result column="administrator" property="administrator" />
+		<result column="projectCompanyDepartment" property="projectCompanyDepartment" />
+		<result column="custodyAccount" property="custodyAccount" />
+		<result column="custodyBank" property="custodyBank" />
+		<result column="custodyUserName" property="custodyUserName" />
+		<result column="investAccount" property="investAccount" />
+		<result column="investBank" property="investBank" />
+		<result column="investUserName" property="investUserName" />
+		<result column="note" property="note" />
+		<result column="projectDataFrom" property="projectDataFrom" />
+		<result column="status" property="status" />
+	</resultMap>
+
+	<!--&lt;!&ndash; 通用的查询SQL字段&ndash;&gt;-->
+	<!--<sql id="All_Column_List">-->
+		<!--projectId,projectName,projectEnglishName,size,timeLimit,timeLimitUnit,buildDate,endDate,productType,projectCompany,dockingPeopleA,-->
+		<!--dockingPeopleB,dockingPeopleC,productManagerA,productManagerB,projectType,investMethod,moneyTo,raiseCurrency,investCurrency,isStructuring,-->
+		<!--incomeDistributionMethod,incomeDistributionFrequency,assetManagementReportFrequency,financier,administrator,projectCompanyDepartment,custodyAccount,custodyBank,custodyUserName,investAccount,-->
+		<!--investBank,investUserName,note,projectDataFrom,status-->
+	<!--</sql>-->
+
+	<!--&lt;!&ndash; insertSQL字段&ndash;&gt;-->
+	<!--<sql id="Insert_Column_List">-->
+		<!--projectId,projectName,projectEnglishName,size,timeLimit,timeLimitUnit,buildDate,endDate,productType,projectCompany,dockingPeopleA,-->
+		<!--dockingPeopleB,dockingPeopleC,productManagerA,productManagerB,projectType,investMethod,moneyTo,raiseCurrency,investCurrency,isStructuring,-->
+		<!--incomeDistributionMethod,incomeDistributionFrequency,assetManagementReportFrequency,financier,administrator,projectCompanyDepartment,custodyAccount,custodyBank,custodyUserName,investAccount,-->
+		<!--investBank,investUserName,note,projectDataFrom,status-->
+	<!--</sql>-->
+
+	<!--&lt;!&ndash;根据Id查询记录&ndash;&gt;-->
+	<!--<select id="selectById" resultMap="BaseResultMap">-->
+		 <!--SELECT <include refid="All_Column_List"/> FROM project WHERE id=#{id}-->
+	<!--</select>-->
+
+	<!--&lt;!&ndash;新增记录，只匹配有值的字段&ndash;&gt;-->
+	<!--<insert id="insertSelective">-->
+		<!--INSERT INTO project-->
+		<!--<trim prefix="(" suffix=")" suffixOverrides="," >-->
+			<!--<if test="pojo.projectId !=null">projectId,</if>-->
+			<!--<if test="pojo.projectName !=null">projectName,</if>-->
+			<!--<if test="pojo.projectEnglishName !=null">projectEnglishName,</if>-->
+			<!--<if test="pojo.size !=null">size,</if>-->
+			<!--<if test="pojo.timeLimit !=null">timeLimit,</if>-->
+			<!--<if test="pojo.timeLimitUnit !=null">timeLimitUnit,</if>-->
+			<!--<if test="pojo.buildDate !=null">buildDate,</if>-->
+			<!--<if test="pojo.endDate !=null">endDate,</if>-->
+			<!--<if test="pojo.productType !=null">productType,</if>-->
+			<!--<if test="pojo.projectCompany !=null">projectCompany,</if>-->
+			<!--<if test="pojo.dockingPeopleA !=null">dockingPeopleA,</if>-->
+			<!--<if test="pojo.dockingPeopleB !=null">dockingPeopleB,</if>-->
+			<!--<if test="pojo.dockingPeopleC !=null">dockingPeopleC,</if>-->
+			<!--<if test="pojo.productManagerA !=null">productManagerA,</if>-->
+			<!--<if test="pojo.productManagerB !=null">productManagerB,</if>-->
+			<!--<if test="pojo.projectType !=null">projectType,</if>-->
+			<!--<if test="pojo.investMethod !=null">investMethod,</if>-->
+			<!--<if test="pojo.moneyTo !=null">moneyTo,</if>-->
+			<!--<if test="pojo.raiseCurrency !=null">raiseCurrency,</if>-->
+			<!--<if test="pojo.investCurrency !=null">investCurrency,</if>-->
+			<!--<if test="pojo.isStructuring !=null">isStructuring,</if>-->
+			<!--<if test="pojo.incomeDistributionMethod !=null">incomeDistributionMethod,</if>-->
+			<!--<if test="pojo.incomeDistributionFrequency !=null">incomeDistributionFrequency,</if>-->
+			<!--<if test="pojo.assetManagementReportFrequency !=null">assetManagementReportFrequency,</if>-->
+			<!--<if test="pojo.financier !=null">financier,</if>-->
+			<!--<if test="pojo.administrator !=null">administrator,</if>-->
+			<!--<if test="pojo.projectCompanyDepartment !=null">projectCompanyDepartment,</if>-->
+			<!--<if test="pojo.custodyAccount !=null">custodyAccount,</if>-->
+			<!--<if test="pojo.custodyBank !=null">custodyBank,</if>-->
+			<!--<if test="pojo.custodyUserName !=null">custodyUserName,</if>-->
+			<!--<if test="pojo.investAccount !=null">investAccount,</if>-->
+			<!--<if test="pojo.investBank !=null">investBank,</if>-->
+			<!--<if test="pojo.investUserName !=null">investUserName,</if>-->
+			<!--<if test="pojo.note !=null">note,</if>-->
+			<!--<if test="pojo.projectDataFrom !=null">projectDataFrom,</if>-->
+			<!--<if test="pojo.status !=null">status,</if>-->
+		<!--</trim>-->
+		<!--VALUES-->
+		<!--<trim prefix="(" suffix=")" suffixOverrides="," >-->
+			<!--<if test="pojo.projectId !=null">#{pojo.projectId},</if>-->
+			<!--<if test="pojo.projectName !=null">#{pojo.projectName},</if>-->
+			<!--<if test="pojo.projectEnglishName !=null">#{pojo.projectEnglishName},</if>-->
+			<!--<if test="pojo.size !=null">#{pojo.size},</if>-->
+			<!--<if test="pojo.timeLimit !=null">#{pojo.timeLimit},</if>-->
+			<!--<if test="pojo.timeLimitUnit !=null">#{pojo.timeLimitUnit},</if>-->
+			<!--<if test="pojo.buildDate !=null">#{pojo.buildDate},</if>-->
+			<!--<if test="pojo.endDate !=null">#{pojo.endDate},</if>-->
+			<!--<if test="pojo.productType !=null">#{pojo.productType},</if>-->
+			<!--<if test="pojo.projectCompany !=null">#{pojo.projectCompany},</if>-->
+			<!--<if test="pojo.dockingPeopleA !=null">#{pojo.dockingPeopleA},</if>-->
+			<!--<if test="pojo.dockingPeopleB !=null">#{pojo.dockingPeopleB},</if>-->
+			<!--<if test="pojo.dockingPeopleC !=null">#{pojo.dockingPeopleC},</if>-->
+			<!--<if test="pojo.productManagerA !=null">#{pojo.productManagerA},</if>-->
+			<!--<if test="pojo.productManagerB !=null">#{pojo.productManagerB},</if>-->
+			<!--<if test="pojo.projectType !=null">#{pojo.projectType},</if>-->
+			<!--<if test="pojo.investMethod !=null">#{pojo.investMethod},</if>-->
+			<!--<if test="pojo.moneyTo !=null">#{pojo.moneyTo},</if>-->
+			<!--<if test="pojo.raiseCurrency !=null">#{pojo.raiseCurrency},</if>-->
+			<!--<if test="pojo.investCurrency !=null">#{pojo.investCurrency},</if>-->
+			<!--<if test="pojo.isStructuring !=null">#{pojo.isStructuring},</if>-->
+			<!--<if test="pojo.incomeDistributionMethod !=null">#{pojo.incomeDistributionMethod},</if>-->
+			<!--<if test="pojo.incomeDistributionFrequency !=null">#{pojo.incomeDistributionFrequency},</if>-->
+			<!--<if test="pojo.assetManagementReportFrequency !=null">#{pojo.assetManagementReportFrequency},</if>-->
+			<!--<if test="pojo.financier !=null">#{pojo.financier},</if>-->
+			<!--<if test="pojo.administrator !=null">#{pojo.administrator},</if>-->
+			<!--<if test="pojo.projectCompanyDepartment !=null">#{pojo.projectCompanyDepartment},</if>-->
+			<!--<if test="pojo.custodyAccount !=null">#{pojo.custodyAccount},</if>-->
+			<!--<if test="pojo.custodyBank !=null">#{pojo.custodyBank},</if>-->
+			<!--<if test="pojo.custodyUserName !=null">#{pojo.custodyUserName},</if>-->
+			<!--<if test="pojo.investAccount !=null">#{pojo.investAccount},</if>-->
+			<!--<if test="pojo.investBank !=null">#{pojo.investBank},</if>-->
+			<!--<if test="pojo.investUserName !=null">#{pojo.investUserName},</if>-->
+			<!--<if test="pojo.note !=null">#{pojo.note},</if>-->
+			<!--<if test="pojo.projectDataFrom !=null">#{pojo.projectDataFrom},</if>-->
+			<!--<if test="pojo.status !=null">#{pojo.status},</if>-->
+		<!--</trim>-->
+	<!--</insert>-->
+
+	<!--&lt;!&ndash;根据Id更新记录,只更新有值的字段&ndash;&gt;-->
+	<!--<update id="updateSelectiveById">-->
+		<!--UPDATE project-->
+		<!--<set> -->
+			<!--<if test="pojo.projectId != null">projectId = #{pojo.projectId},</if>-->
+			<!--<if test="pojo.projectName != null">projectName = #{pojo.projectName},</if>-->
+			<!--<if test="pojo.projectEnglishName != null">projectEnglishName = #{pojo.projectEnglishName},</if>-->
+			<!--<if test="pojo.size != null">size = #{pojo.size},</if>-->
+			<!--<if test="pojo.timeLimit != null">timeLimit = #{pojo.timeLimit},</if>-->
+			<!--<if test="pojo.timeLimitUnit != null">timeLimitUnit = #{pojo.timeLimitUnit},</if>-->
+			<!--<if test="pojo.buildDate != null">buildDate = #{pojo.buildDate},</if>-->
+			<!--<if test="pojo.endDate != null">endDate = #{pojo.endDate},</if>-->
+			<!--<if test="pojo.productType != null">productType = #{pojo.productType},</if>-->
+			<!--<if test="pojo.projectCompany != null">projectCompany = #{pojo.projectCompany},</if>-->
+			<!--<if test="pojo.dockingPeopleA != null">dockingPeopleA = #{pojo.dockingPeopleA},</if>-->
+			<!--<if test="pojo.dockingPeopleB != null">dockingPeopleB = #{pojo.dockingPeopleB},</if>-->
+			<!--<if test="pojo.dockingPeopleC != null">dockingPeopleC = #{pojo.dockingPeopleC},</if>-->
+			<!--<if test="pojo.productManagerA != null">productManagerA = #{pojo.productManagerA},</if>-->
+			<!--<if test="pojo.productManagerB != null">productManagerB = #{pojo.productManagerB},</if>-->
+			<!--<if test="pojo.projectType != null">projectType = #{pojo.projectType},</if>-->
+			<!--<if test="pojo.investMethod != null">investMethod = #{pojo.investMethod},</if>-->
+			<!--<if test="pojo.moneyTo != null">moneyTo = #{pojo.moneyTo},</if>-->
+			<!--<if test="pojo.raiseCurrency != null">raiseCurrency = #{pojo.raiseCurrency},</if>-->
+			<!--<if test="pojo.investCurrency != null">investCurrency = #{pojo.investCurrency},</if>-->
+			<!--<if test="pojo.isStructuring != null">isStructuring = #{pojo.isStructuring},</if>-->
+			<!--<if test="pojo.incomeDistributionMethod != null">incomeDistributionMethod = #{pojo.incomeDistributionMethod},</if>-->
+			<!--<if test="pojo.incomeDistributionFrequency != null">incomeDistributionFrequency = #{pojo.incomeDistributionFrequency},</if>-->
+			<!--<if test="pojo.assetManagementReportFrequency != null">assetManagementReportFrequency = #{pojo.assetManagementReportFrequency},</if>-->
+			<!--<if test="pojo.financier != null">financier = #{pojo.financier},</if>-->
+			<!--<if test="pojo.administrator != null">administrator = #{pojo.administrator},</if>-->
+			<!--<if test="pojo.projectCompanyDepartment != null">projectCompanyDepartment = #{pojo.projectCompanyDepartment},</if>-->
+			<!--<if test="pojo.custodyAccount != null">custodyAccount = #{pojo.custodyAccount},</if>-->
+			<!--<if test="pojo.custodyBank != null">custodyBank = #{pojo.custodyBank},</if>-->
+			<!--<if test="pojo.custodyUserName != null">custodyUserName = #{pojo.custodyUserName},</if>-->
+			<!--<if test="pojo.investAccount != null">investAccount = #{pojo.investAccount},</if>-->
+			<!--<if test="pojo.investBank != null">investBank = #{pojo.investBank},</if>-->
+			<!--<if test="pojo.investUserName != null">investUserName = #{pojo.investUserName},</if>-->
+			<!--<if test="pojo.note != null">note = #{pojo.note},</if>-->
+			<!--<if test="pojo.projectDataFrom != null">projectDataFrom = #{pojo.projectDataFrom},</if>-->
+			<!--<if test="pojo.status != null">status = #{pojo.status},</if>-->
+		<!--</set>-->
+		<!--WHERE id = #{pojo.id}-->
+	<!--</update>-->
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pactera.dao.product.AccessoriesMapper">
+    <!-- ResultMap定义-->
+    <resultMap id="accessoriesMap" type="Accessories">
+        <id column="id" property="id"/>
+        <result column="documentType" property="documentType"/>
+        <result column="fileName" property="fileName"/>
+        <result column="filePath" property="filePath"/>
+        <result column="founder" property="founder"/>
+        <result column="uploadTime" property="uploadTime"/>
+        <result column="fileSize" property="fileSize"/>
+        <result column="attachmentShows" property="attachmentShows"/>
+        <result column="status" property="status"/>
+        <result column="productCode" property="productCode"/>
+    </resultMap>
+
+    <select id="selectAccessoriesByProductCode" parameterType="Integer" resultMap="accessoriesMap">
+		SELECT * FROM accessories WHERE productCode=#{productCode} AND `status`=1
+	</select>
+
+    <select id="getAccessoriesById" parameterType="Integer" resultMap="accessoriesMap">
+		SELECT * FROM accessories WHERE id=#{id}
+	</select>
+
+    <select id="getAccessoriesByDocumentTypeOrUploadTime" resultMap="accessoriesMap">
+        SELECT * FROM accessories
+        <where>
+            <if test="documentType!=null and documentType!=''">
+                AND documentType=#{documentType}
+            </if>
+            <if test="uploadTime!=null and uploadTime!=''">
+                AND uploadTime=#{uploadTime}
+            </if>
+            <if test="productCode!=null and productCode!=''">
+                AND productCode=#{productCode}
+            </if>
+            AND `status`=1
+        </where>
+    </select>
+
+
+    <update id="updateAccessories" parameterType="Accessories">
+        UPDATE accessories
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="documentType!=null">
+                documentType=#{documentType},
+            </if>
+            <if test="fileName!=null">
+                fileName=#{fileName},
+            </if>
+            <if test="founder!=null">
+                founder=#{founder},
+            </if>
+            <if test="uploadTime!=null">
+                uploadTime=#{uploadTime},
+            </if>
+            <if test="fileSize!=null">
+                fileSize=#{fileSize},
+            </if>
+            <if test="attachmentShows!=null">
+                attachmentShows=#{attachmentShows},
+            </if>
+        </trim>
+    </update>
+
+    <update id="updateAccessoriesStatus">
+		UPDATE accessories SET `status`=#{status} WHERE id=#{id}
+	</update>
+
+    <insert id="addAccessories" parameterType="Accessories">
+        INSERT INTO accessories
+            ( documentType,
+            fileName,
+            filePath,
+            founder,
+            uploadTime,
+            fileSize,
+            attachmentShows,
+            productCode
+            )
+            VALUES
+            (
+            #{documentType},
+            #{fileName},
+            #{filePath},
+            #{founder},
+            SYSDATE(),
+            #{fileSize},
+            #{attachmentShows},
+            #{productCode}
+            );
+	</insert>
+
+</mapper>

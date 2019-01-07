@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">		
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+		<style type="text/css">
+			tr {
+				height: 45px;
+			}
+			td{
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div id="pagemark">
+				<a th:href="@{/product/selectProductDetail(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">产品信息</button></a>
+				<a><button class="btn btn-info" style="width: 80px;">附件信息</button></a>
+				<a th:href="@{/customer/getCustomerList(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">客户</button></a>
+				<a th:href="@{/netvalue/getNetvalueListByProductCode(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">净值</button></a>
+				<a th:href="@{/earnings/selectByProductCode(projectId=${projectId},productCode=${productCode})}"><button class="btn btn-default" style="width: 80px;">收益级别</button></a>
+				<a><button class="btn btn-default" style="width: 80px;">投后事项</button></a>
+			</div>
+			<div>
+				<p style="background-color:#5bc0de ;">附件信息列表</p>
+			</div>
+			<div align="center">
+				<form th:action="@{/accessories/getAccessoriesByDocumentTypeOrUploadTime}">
+					<table width="65%">
+						<tr>
+							<td>文档类型:
+								<select name="documentType" value="${documentType}">
+									<option value="">全部</option>
+									<option th:selected="${documentType}=='信托合同'" value="信托合同">信托合同</option>
+									<option th:selected="${documentType}=='基金合同'" value="基金合同">基金合同</option>
+									<option th:selected="${documentType}=='合伙协议'" value="合伙协议">合伙协议</option>
+									<option th:selected="${documentType}=='信托计划说明书'" value="信托计划说明书">信托计划说明书</option>
+									<option th:selected="${documentType}=='推介材料'" value="推介材料">推介材料</option>
+									<option th:selected="${documentType}=='路演视频'" value="路演视频">路演视频</option>
+									<option th:selected="${documentType}=='补充协议'" value="补充协议">补充协议</option>
+									<option th:selected="${documentType}=='管理报告'" value="管理报告">管理报告</option>
+									<option th:selected="${documentType}=='净值公告'" value="净值公告">净值公告</option>
+									<option th:selected="${documentType}=='临时披露材料'" value="临时披露材料">临时披露材料</option>
+									<option th:selected="${documentType}=='退出说明材料'" value="退出说明材料">退出说明材料</option>
+									<option th:selected="${documentType}=='清算报告'" value="清算报告">清算报告</option>
+									<option th:selected="${documentType}=='其他涉密材料'" value="其他涉密材料">其他涉密材料</option>
+									<option th:selected="${documentType}=='其他'" value="其他">其他</option>
+							</select>
+							</td>
+							<td>上传日期:
+								<input type="date" name="uploadTime" th:value="${uploadTime}"/>
+							</td>
+							<!--携带projectId,productCode-->
+							<input type="hidden" name="projectId" th:value="${projectId}"/>
+							<input type="hidden" name="productCode" th:value="${productCode}"/>
+						</tr>
+						<tr>
+							<td colspan="2" align="center">
+								<input type="submit" value="查询" class="btn btn-info"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="reset" value="重置" class="btn btn-danger"/>
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<hr />
+		</div>
+		<div class="container">
+			<div>
+				<a th:href="@{/accessories/toAccessoriesAdd(productCode=${productCode},projectId=${projectId})}"><button class="btn btn-success">添加附件</button></a>
+			</div>
+			<table class="table table-bordered table-hover">
+				<tr bgcolor="#F2F2F2">
+					<td>操作</td>
+					<td>文档类型</td>
+					<td>文件名称</td>
+					<td>创建人</td>
+					<td>上传日期</td>
+					<td>文件大小(KB)</td>
+					<td>附件说明</td>
+					<td>附件下载</td>
+				</tr>
+				<tr th:each="accessories:${list}">
+					<td>
+						<a th:href="@{/accessories/getAccessoriesById(id=${accessories.id},projectId=${projectId})}">修改</a>
+						<a onclick="del(this)" th:data-id="${accessories.id}" th:data-productCode="${productCode}" th:data-projectId="${projectId}">删除</a>
+					</td>
+					<td th:text="${accessories.documentType}"></td>
+					<td><a th:text="${accessories.fileName}"></a></td>
+					<td th:text="${accessories.founder}"></td>
+					<td th:text="${#dates.format(accessories.uploadTime,'yyyy-MM-dd')}"></td>
+					<td th:text="${accessories.fileSize}"></td>
+					<td th:text="${accessories.attachmentShows}"></td>
+					<td><a th:href="${accessories.filePath}" th:download="${accessories.fileName}">下载</a></td>
+				</tr>
+			</table>
+		</div>
+		<script type="text/javascript">
+            function del(e) {
+                var id =e.getAttribute("data-id");
+                var productCode =e.getAttribute("data-productCode");
+                var projectId =e.getAttribute("data-projectId");
+                if (confirm("确定要删除此附件吗?")) {
+                    location.href = "/accessories/deleteAccessories?id=" + id+"&productCode="+productCode+"&projectId="+projectId;
+                }
+            }
+		</script>
+	</body>
+</html>
